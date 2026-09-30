@@ -1,0 +1,88 @@
+{
+  "schema": "supra-uaps-config/v1",
+  "endianness": "little",
+  "size_bytes": 64,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "magic",
+      "offset": 0,
+      "type": "u32",
+      "constant": "0x314a4449"
+    },
+    {
+      "name": "version",
+      "offset": 4,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "bytes",
+      "offset": 6,
+      "type": "u16",
+      "constant": 64
+    },
+    {
+      "name": "base_token_count",
+      "offset": 8,
+      "type": "u16",
+      "minimum": 0,
+      "maximum": 48
+    },
+    {
+      "name": "future_token_count",
+      "offset": 10,
+      "type": "u16",
+      "maximum": 32
+    },
+    {
+      "name": "next_block_start",
+      "offset": 12,
+      "type": "u16",
+      "maximum": 2047
+    },
+    {
+      "name": "max_next_tokens",
+      "offset": 14,
+      "type": "u8",
+      "minimum": 1,
+      "maximum": 32
+    },
+    {
+      "name": "priority_control",
+      "offset": 15,
+      "type": "u8",
+      "default": 0
+    },
+    {
+      "name": "base_table_base",
+      "offset": 16,
+      "type": "u64"
+    },
+    {
+      "name": "base_table_limit",
+      "offset": 24,
+      "type": "u64"
+    },
+    {
+      "name": "future_table_base",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "future_table_limit",
+      "offset": 40,
+      "type": "u64"
+    },
+    {
+      "name": "result_base",
+      "offset": 48,
+      "type": "u64"
+    },
+    {
+      "name": "result_limit",
+      "offset": 56,
+      "type": "u64"
+    }
+  ]
+}

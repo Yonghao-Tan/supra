@@ -1,0 +1,41 @@
+SUPRA Non-Commercial License — Provisional (TBD)
+
+Final licensing terms are TBD and may change in a future release. This notice
+does not itself grant permission for commercial use.
+
+1. Scope
+This license applies to original SUPRA contributions distributed with this
+license. Third-party code, model weights and datasets remain subject to their
+respective licenses. This license does not restrict rights granted directly by
+third-party copyright holders. Preserve all applicable upstream notices.
+
+2. Non-commercial permission
+Subject to these terms, the copyright holders permit you to use, reproduce,
+study, modify and distribute the covered contributions, in source or modified
+form, solely for non-commercial research, education and other non-commercial
+purposes. Copies and modifications must retain this license and applicable
+copyright notices, identify modifications, and carry the same non-commercial
+restriction for the covered contributions.
+
+3. Commercial use prohibited
+Commercial use is not permitted without a separate written license from the
+copyright holders. Commercial use includes selling or licensing products or
+services incorporating the covered contributions; using them to provide paid
+services; and using them for commercial product development, production,
+deployment or other activities directed toward commercial advantage or
+monetary compensation. No commercial patent license is granted.
+
+4. Attribution and trademarks
+This license grants no right to use contributor names or trademarks to imply
+endorsement. Third-party attribution and license notices must remain intact.
+
+5. Disclaimer
+THE COVERED CONTRIBUTIONS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NON-INFRINGEMENT. TO THE EXTENT PERMITTED BY LAW, THE
+COPYRIGHT HOLDERS AND CONTRIBUTORS SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES
+OR OTHER LIABILITY ARISING FROM USE OF THE COVERED CONTRIBUTIONS.
+
+6. Termination
+Permission under this license terminates if you violate these terms. Rights
+under separate third-party licenses are unaffected.

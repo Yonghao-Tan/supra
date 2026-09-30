@@ -1,0 +1,83 @@
+{
+  "schema": "supra-attention-probability-config/v1",
+  "endianness": "little",
+  "size_bytes": 80,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "output_base",
+      "offset": 0,
+      "type": "u64"
+    },
+    {
+      "name": "output_limit",
+      "offset": 8,
+      "type": "u64"
+    },
+    {
+      "name": "batch_stride_bytes",
+      "offset": 16,
+      "type": "u32"
+    },
+    {
+      "name": "head_stride_bytes",
+      "offset": 20,
+      "type": "u32"
+    },
+    {
+      "name": "round_stride_bytes",
+      "offset": 24,
+      "type": "u32"
+    },
+    {
+      "name": "layer_mask",
+      "offset": 28,
+      "type": "u32"
+    },
+    {
+      "name": "key_groups0",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "key_groups1",
+      "offset": 40,
+      "type": "u64"
+    },
+    {
+      "name": "key_groups2",
+      "offset": 48,
+      "type": "u64"
+    },
+    {
+      "name": "key_groups3",
+      "offset": 56,
+      "type": "u64"
+    },
+    {
+      "name": "query_begin",
+      "offset": 64,
+      "type": "u16",
+      "maximum": 2048
+    },
+    {
+      "name": "query_end",
+      "offset": 66,
+      "type": "u16",
+      "maximum": 2048
+    },
+    {
+      "name": "capture_p8",
+      "offset": 68,
+      "type": "u32",
+      "maximum": 1,
+      "default": 0
+    },
+    {
+      "name": "shortlist_configuration_base",
+      "offset": 72,
+      "type": "u64",
+      "default": 0
+    }
+  ]
+}

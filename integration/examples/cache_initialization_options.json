@@ -1,0 +1,6 @@
+{
+  "ffn_group_batches": 6,
+  "ffn_fused_product": true,
+  "ffn_down_pair": true,
+  "qkvo_group": true
+}

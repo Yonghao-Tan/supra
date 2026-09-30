@@ -1,0 +1,192 @@
+{
+  "schema": "supra-token-refresh-config/v1",
+  "endianness": "little",
+  "size_bytes": 176,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "magic",
+      "offset": 0,
+      "type": "u32",
+      "constant": "0x31465241"
+    },
+    {
+      "name": "version",
+      "offset": 4,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "bytes",
+      "offset": 6,
+      "type": "u16",
+      "default": 176,
+      "minimum": 176,
+      "maximum": 208,
+      "allowed_values": [
+        176,
+        208
+      ]
+    },
+    {
+      "name": "flags",
+      "offset": 8,
+      "type": "u16",
+      "valid_mask": "0xffff"
+    },
+    {
+      "name": "pending_configuration_offset",
+      "offset": 10,
+      "type": "u16",
+      "default": 0
+    },
+    {
+      "name": "sequence_length",
+      "offset": 12,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 2048
+    },
+    {
+      "name": "target_token_count",
+      "offset": 14,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 432
+    },
+    {
+      "name": "required_quota",
+      "offset": 16,
+      "type": "u16"
+    },
+    {
+      "name": "probability_configuration_offset",
+      "offset": 18,
+      "type": "u16"
+    },
+    {
+      "name": "head_stride",
+      "offset": 20,
+      "type": "u32",
+      "minimum": 262144
+    },
+    {
+      "name": "scale_head_stride",
+      "offset": 24,
+      "type": "u32",
+      "minimum": 4096
+    },
+    {
+      "name": "metadata_version",
+      "offset": 28,
+      "type": "u32"
+    },
+    {
+      "name": "table_base",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "table_limit",
+      "offset": 40,
+      "type": "u64"
+    },
+    {
+      "name": "metadata_base",
+      "offset": 48,
+      "type": "u64"
+    },
+    {
+      "name": "metadata_limit",
+      "offset": 56,
+      "type": "u64"
+    },
+    {
+      "name": "source_k_base",
+      "offset": 64,
+      "type": "u64"
+    },
+    {
+      "name": "source_v_base",
+      "offset": 72,
+      "type": "u64"
+    },
+    {
+      "name": "source_scale_base",
+      "offset": 80,
+      "type": "u64"
+    },
+    {
+      "name": "destination_k_base",
+      "offset": 88,
+      "type": "u64"
+    },
+    {
+      "name": "destination_v_base",
+      "offset": 96,
+      "type": "u64"
+    },
+    {
+      "name": "destination_scale_base",
+      "offset": 104,
+      "type": "u64"
+    },
+    {
+      "name": "source_k_limit",
+      "offset": 112,
+      "type": "u64"
+    },
+    {
+      "name": "source_v_limit",
+      "offset": 120,
+      "type": "u64"
+    },
+    {
+      "name": "source_scale_limit",
+      "offset": 128,
+      "type": "u64"
+    },
+    {
+      "name": "destination_k_limit",
+      "offset": 136,
+      "type": "u64"
+    },
+    {
+      "name": "destination_v_limit",
+      "offset": 144,
+      "type": "u64"
+    },
+    {
+      "name": "destination_scale_limit",
+      "offset": 152,
+      "type": "u64"
+    },
+    {
+      "name": "capture_index",
+      "offset": 160,
+      "type": "u32"
+    },
+    {
+      "name": "relation_job_count",
+      "offset": 164,
+      "type": "u32",
+      "maximum": 65535
+    },
+    {
+      "name": "relation_job_base",
+      "offset": 168,
+      "type": "u64"
+    }
+  ],
+  "flag_bits": {
+    "commit_selected_cache": 0,
+    "write_next_metadata": 1,
+    "embedding_sources": 2,
+    "allocate_context_precision": 3,
+    "base_all_a8": 4,
+    "allocate_deep_precision": 5,
+    "publish_selection_result": 6,
+    "update_cross_block_then_regular": 7,
+    "qkvo_group_metadata": 15
+  }
+}

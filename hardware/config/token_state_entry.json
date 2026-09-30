@@ -1,0 +1,125 @@
+{
+  "schema": "supra-token-state-entry/v1",
+  "endianness": "little",
+  "size_bytes": 32,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "token_position",
+      "offset": 0,
+      "type": "u16",
+      "maximum": 2047
+    },
+    {
+      "name": "block_local_position",
+      "offset": 2,
+      "type": "u8",
+      "maximum": 31
+    },
+    {
+      "name": "block_slot",
+      "offset": 3,
+      "type": "u8",
+      "maximum": 3
+    },
+    {
+      "name": "global_block_id",
+      "offset": 4,
+      "type": "u8",
+      "maximum": 63
+    },
+    {
+      "name": "state",
+      "offset": 5,
+      "type": "u8",
+      "maximum": 2
+    },
+    {
+      "name": "origin",
+      "offset": 6,
+      "type": "u8",
+      "maximum": 3
+    },
+    {
+      "name": "activation_bits",
+      "offset": 7,
+      "type": "u8",
+      "allowed_values": [
+        4,
+        8
+      ]
+    },
+    {
+      "name": "token_id",
+      "offset": 8,
+      "type": "u32",
+      "maximum": 126463
+    },
+    {
+      "name": "last_top1",
+      "offset": 12,
+      "type": "u32"
+    },
+    {
+      "name": "precision_age",
+      "offset": 16,
+      "type": "i16"
+    },
+    {
+      "name": "cache_valid",
+      "offset": 18,
+      "type": "u8",
+      "maximum": 1
+    },
+    {
+      "name": "refresh_required",
+      "offset": 19,
+      "type": "u8",
+      "maximum": 1
+    },
+    {
+      "name": "capture_index",
+      "offset": 20,
+      "type": "u32"
+    },
+    {
+      "name": "prediction_flag",
+      "offset": 24,
+      "type": "u8",
+      "maximum": 1
+    },
+    {
+      "name": "change_flags",
+      "offset": 25,
+      "type": "u8",
+      "valid_mask": "0x3",
+      "default": 0
+    },
+    {
+      "name": "change_confidence_bf16",
+      "offset": 26,
+      "type": "u16",
+      "default": 0
+    },
+    {
+      "name": "last_action_confidence_bf16",
+      "offset": 28,
+      "type": "u16",
+      "default": 0
+    },
+    {
+      "name": "last_action_confidence_valid",
+      "offset": 30,
+      "type": "u8",
+      "maximum": 1,
+      "default": 0
+    },
+    {
+      "name": "source_a_pending",
+      "offset": 31,
+      "type": "u8",
+      "maximum": 1,
+      "default": 0
+    }
+  ]
+}

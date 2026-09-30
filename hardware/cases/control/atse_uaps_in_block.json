@@ -1,0 +1,916 @@
+{
+  "schema": "supra-atse-uaps-in-block/v1",
+  "target_joint_tokens": 48,
+  "max_next_tokens": 32,
+  "records": [
+    {
+      "name": "regular_joint_0",
+      "regular_source": "atse_attention_dependencies.json",
+      "regular_record_index": 1,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            7
+          ],
+          "raw": [
+            7,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            7
+          ],
+          "raw": [
+            8,
+            4,
+            8,
+            8,
+            4,
+            8,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            7
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            25
+          ],
+          "raw": [
+            0,
+            12,
+            24,
+            6,
+            18,
+            30,
+            9,
+            21,
+            3,
+            15,
+            27,
+            4,
+            16,
+            28,
+            10,
+            22,
+            1,
+            13,
+            25,
+            7,
+            19,
+            31,
+            8,
+            20,
+            2
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            25
+          ],
+          "raw": [
+            0,
+            12,
+            24,
+            6,
+            18,
+            30,
+            9,
+            21,
+            3,
+            15,
+            27,
+            4,
+            16,
+            28,
+            10,
+            22,
+            1,
+            13,
+            25,
+            7,
+            19,
+            31,
+            8,
+            20,
+            2
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            25
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 3,
+          "a8_token_count": 4,
+          "issued_slice_units": 16,
+          "pe_issue_groups": 1,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 28672,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 22528,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 67584,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 17,
+          "a8_token_count": 15,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 96256,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 288768,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 0,
+          "a8_token_count": 32,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 393216,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "regular_joint_1",
+      "regular_source": "atse_attention_dependencies.json",
+      "regular_record_index": 0,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            6
+          ],
+          "raw": [
+            5,
+            8,
+            9,
+            10,
+            11,
+            13
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            6
+          ],
+          "raw": [
+            8,
+            8,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            6
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            8,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16000,
+            16128,
+            15232,
+            16256,
+            16000,
+            16128,
+            15232
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            6,
+            3,
+            4,
+            1,
+            7,
+            2,
+            5
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            6,
+            3,
+            4,
+            1,
+            7,
+            2,
+            5
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 1,
+          "a8_token_count": 5,
+          "issued_slice_units": 16,
+          "pe_issue_groups": 1,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 24576,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 22528,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 67584,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 6,
+          "a8_token_count": 8,
+          "issued_slice_units": 32,
+          "pe_issue_groups": 2,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 57344,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 45056,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 135168,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 0,
+          "a8_token_count": 14,
+          "issued_slice_units": 32,
+          "pe_issue_groups": 2,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 57344,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 57344,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 172032,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "regular_joint_2",
+      "regular_source": "atse_in_block_boundaries.json",
+      "regular_record_index": 1,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            8,
+            4,
+            8,
+            8,
+            4,
+            8,
+            8,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            0
+          ],
+          "raw": []
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 3,
+          "a8_token_count": 5,
+          "issued_slice_units": 16,
+          "pe_issue_groups": 1,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 32768,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 26624,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 79872,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 3,
+          "a8_token_count": 5,
+          "issued_slice_units": 16,
+          "pe_issue_groups": 1,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 32768,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 26624,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 79872,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 0,
+          "a8_token_count": 8,
+          "issued_slice_units": 16,
+          "pe_issue_groups": 1,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 32768,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 32768,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 98304,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

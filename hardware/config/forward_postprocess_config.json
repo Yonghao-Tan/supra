@@ -1,0 +1,239 @@
+{
+  "schema": "supra-forward-postprocess-config/v1",
+  "endianness": "little",
+  "size_bytes": 192,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "magic",
+      "offset": 0,
+      "type": "u32",
+      "constant": "0x31434250"
+    },
+    {
+      "name": "version",
+      "offset": 4,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "header_bytes",
+      "offset": 6,
+      "type": "u16",
+      "constant": 192
+    },
+    {
+      "name": "total_bytes",
+      "offset": 8,
+      "type": "u32",
+      "constant": 192
+    },
+    {
+      "name": "flags",
+      "offset": 12,
+      "type": "u16",
+      "valid_mask": "0x1",
+      "default": 0
+    },
+    {
+      "name": "forward_event_entry_bytes",
+      "offset": 14,
+      "type": "u16",
+      "constant": 64
+    },
+    {
+      "name": "vocabulary_size",
+      "offset": 16,
+      "type": "u32",
+      "minimum": 8,
+      "maximum": 126464
+    },
+    {
+      "name": "input_features",
+      "offset": 20,
+      "type": "u16",
+      "minimum": 8,
+      "maximum": 4096
+    },
+    {
+      "name": "candidate_lanes",
+      "offset": 22,
+      "type": "u16",
+      "constant": 64
+    },
+    {
+      "name": "raw_w8_layout_id",
+      "offset": 24,
+      "type": "u32",
+      "constant": 1
+    },
+    {
+      "name": "state_format",
+      "offset": 28,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "descriptor_format",
+      "offset": 30,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "raw_w8_base",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "raw_w8_limit",
+      "offset": 40,
+      "type": "u64"
+    },
+    {
+      "name": "weight_scale_base",
+      "offset": 48,
+      "type": "u64"
+    },
+    {
+      "name": "weight_scale_limit",
+      "offset": 56,
+      "type": "u64"
+    },
+    {
+      "name": "current_state_base",
+      "offset": 64,
+      "type": "u64"
+    },
+    {
+      "name": "current_state_limit",
+      "offset": 72,
+      "type": "u64"
+    },
+    {
+      "name": "next_state_base",
+      "offset": 80,
+      "type": "u64"
+    },
+    {
+      "name": "next_state_limit",
+      "offset": 88,
+      "type": "u64"
+    },
+    {
+      "name": "suppressed_token_base",
+      "offset": 96,
+      "type": "u64"
+    },
+    {
+      "name": "suppressed_token_limit",
+      "offset": 104,
+      "type": "u64"
+    },
+    {
+      "name": "forward_event_base",
+      "offset": 112,
+      "type": "u64"
+    },
+    {
+      "name": "forward_event_limit",
+      "offset": 120,
+      "type": "u64"
+    },
+    {
+      "name": "completion_base",
+      "offset": 128,
+      "type": "u64"
+    },
+    {
+      "name": "completion_limit",
+      "offset": 136,
+      "type": "u64"
+    },
+    {
+      "name": "mask_token_id",
+      "offset": 144,
+      "type": "u32",
+      "maximum": 126463
+    },
+    {
+      "name": "completion_version",
+      "offset": 148,
+      "type": "u32"
+    },
+    {
+      "name": "high_confidence_threshold_bf16",
+      "offset": 152,
+      "type": "u16"
+    },
+    {
+      "name": "tail_high_confidence_threshold_bf16",
+      "offset": 154,
+      "type": "u16"
+    },
+    {
+      "name": "low_confidence_threshold_bf16",
+      "offset": 156,
+      "type": "u16"
+    },
+    {
+      "name": "verify_threshold_bf16",
+      "offset": 158,
+      "type": "u16"
+    },
+    {
+      "name": "stability_bonus_bf16",
+      "offset": 160,
+      "type": "u16"
+    },
+    {
+      "name": "budget_scale_bf16",
+      "offset": 162,
+      "type": "u16"
+    },
+    {
+      "name": "scale_prefetch_panel_count",
+      "offset": 164,
+      "type": "u16",
+      "constant": 128
+    },
+    {
+      "name": "block_configuration_entry_bytes",
+      "offset": 166,
+      "type": "u16",
+      "constant": 32
+    },
+    {
+      "name": "final_rms_epsilon_bf16",
+      "offset": 168,
+      "type": "u16"
+    },
+    {
+      "name": "state_entry_bytes",
+      "offset": 170,
+      "type": "u16",
+      "constant": 32
+    },
+    {
+      "name": "suppressed_token_entry_bytes",
+      "offset": 172,
+      "type": "u16",
+      "constant": 4
+    },
+    {
+      "name": "completion_entry_bytes",
+      "offset": 174,
+      "type": "u16",
+      "constant": 16
+    },
+    {
+      "name": "block_configuration_base",
+      "offset": 176,
+      "type": "u64"
+    },
+    {
+      "name": "block_configuration_limit",
+      "offset": 184,
+      "type": "u64"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "supra-testcase/v1",
+  "ddr_image": "initial.bin",
+  "memory_map": "memory_map.json",
+  "dramsim3_config": "../../config/ddr/lpddr4_2400_2x16_8gib.ini",
+  "executions": [{"config_address": 268435456, "id": 1346502657, "max_cycles": 1000000}],
+  "expected": [{"name": "ddr", "address": 268435456, "bytes": 2097152, "path": "expected.bin"}]
+}

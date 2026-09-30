@@ -1,0 +1,104 @@
+{
+  "schema": "supra-forward-event/v1",
+  "endianness": "little",
+  "size_bytes": 64,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "capture_index",
+      "offset": 0,
+      "type": "u32"
+    },
+    {
+      "name": "block_slot",
+      "offset": 4,
+      "type": "u8",
+      "maximum": 3
+    },
+    {
+      "name": "global_block_id",
+      "offset": 5,
+      "type": "u8",
+      "maximum": 63
+    },
+    {
+      "name": "position_count",
+      "offset": 6,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 32
+    },
+    {
+      "name": "confirmed_mask",
+      "offset": 8,
+      "type": "u32"
+    },
+    {
+      "name": "remasked_mask",
+      "offset": 12,
+      "type": "u32"
+    },
+    {
+      "name": "selected_mask",
+      "offset": 16,
+      "type": "u32"
+    },
+    {
+      "name": "direct_locked_mask",
+      "offset": 20,
+      "type": "u32"
+    },
+    {
+      "name": "stable_tentative_mask",
+      "offset": 24,
+      "type": "u32"
+    },
+    {
+      "name": "fallback_tentative_mask",
+      "offset": 28,
+      "type": "u32"
+    },
+    {
+      "name": "mandatory_refresh_mask",
+      "offset": 32,
+      "type": "u32"
+    },
+    {
+      "name": "cache_commit_mask",
+      "offset": 36,
+      "type": "u32"
+    },
+    {
+      "name": "cache_invalidate_mask",
+      "offset": 40,
+      "type": "u32"
+    },
+    {
+      "name": "cache_keep_mask",
+      "offset": 44,
+      "type": "u32"
+    },
+    {
+      "name": "token_changed_mask",
+      "offset": 48,
+      "type": "u32"
+    },
+    {
+      "name": "tail_closed_mask",
+      "offset": 52,
+      "type": "u32"
+    },
+    {
+      "name": "reserved0",
+      "offset": 56,
+      "type": "u32",
+      "constant": 0
+    },
+    {
+      "name": "reserved1",
+      "offset": 60,
+      "type": "u32",
+      "constant": 0
+    }
+  ]
+}

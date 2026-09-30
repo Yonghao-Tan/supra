@@ -1,0 +1,8 @@
+{
+  "scout_ffn_group_batches": 4,
+  "scout_ffn_fused_product": true,
+  "deep_ffn_group_batches": 6,
+  "deep_ffn_fused_product": true,
+  "scout_qkvo_group": true,
+  "deep_qkvo_group": true
+}

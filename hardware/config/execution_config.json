@@ -1,0 +1,347 @@
+{
+  "schema": "supra-execution-config/v4",
+  "endianness": "little",
+  "size_bytes": 320,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "magic",
+      "offset": 0,
+      "type": "u32",
+      "constant": "0x344e4c44"
+    },
+    {
+      "name": "version",
+      "offset": 4,
+      "type": "u16",
+      "constant": 4
+    },
+    {
+      "name": "header_bytes",
+      "offset": 6,
+      "type": "u16",
+      "constant": 320
+    },
+    {
+      "name": "total_bytes",
+      "offset": 8,
+      "type": "u32",
+      "constant": 320
+    },
+    {
+      "name": "flags",
+      "offset": 12,
+      "type": "u32",
+      "valid_mask": "0x00003fff"
+    },
+    {
+      "name": "layer_count",
+      "offset": 16,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 32
+    },
+    {
+      "name": "total_token_count",
+      "offset": 18,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 2048
+    },
+    {
+      "name": "sequence_length",
+      "offset": 20,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 2048
+    },
+    {
+      "name": "token_metadata_format",
+      "offset": 22,
+      "type": "u16",
+      "constant": 3
+    },
+    {
+      "name": "start_layer",
+      "offset": 24,
+      "type": "u16",
+      "minimum": 0,
+      "maximum": 31
+    },
+    {
+      "name": "refresh_configuration_offset",
+      "offset": 26,
+      "type": "u16"
+    },
+    {
+      "name": "rotation_enable_mask",
+      "offset": 28,
+      "type": "u8",
+      "constant": 0
+    },
+    {
+      "name": "ffn_pair_first_batch_plus1",
+      "offset": 29,
+      "type": "u8",
+      "minimum": 0,
+      "maximum": 63
+    },
+    {
+      "name": "joint_configuration_offset",
+      "offset": 30,
+      "type": "u16"
+    },
+    {
+      "name": "next_token_metadata_base",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "next_token_metadata_limit",
+      "offset": 40,
+      "type": "u64"
+    },
+    {
+      "name": "output_hidden_base",
+      "offset": 48,
+      "type": "u64"
+    },
+    {
+      "name": "output_hidden_limit",
+      "offset": 56,
+      "type": "u64"
+    },
+    {
+      "name": "bf16_temporary_base",
+      "offset": 64,
+      "type": "u64"
+    },
+    {
+      "name": "bf16_temporary_limit",
+      "offset": 72,
+      "type": "u64"
+    },
+    {
+      "name": "layer_weight_table_base",
+      "offset": 80,
+      "type": "u64"
+    },
+    {
+      "name": "layer_weight_table_limit",
+      "offset": 88,
+      "type": "u64"
+    },
+    {
+      "name": "current_k_cache_base",
+      "offset": 96,
+      "type": "u64"
+    },
+    {
+      "name": "current_k_cache_limit",
+      "offset": 104,
+      "type": "u64"
+    },
+    {
+      "name": "current_v_cache_base",
+      "offset": 112,
+      "type": "u64"
+    },
+    {
+      "name": "current_v_cache_limit",
+      "offset": 120,
+      "type": "u64"
+    },
+    {
+      "name": "retained_k_cache_base",
+      "offset": 128,
+      "type": "u64"
+    },
+    {
+      "name": "retained_k_cache_limit",
+      "offset": 136,
+      "type": "u64"
+    },
+    {
+      "name": "retained_v_cache_base",
+      "offset": 144,
+      "type": "u64"
+    },
+    {
+      "name": "retained_v_cache_limit",
+      "offset": 152,
+      "type": "u64"
+    },
+    {
+      "name": "k_scale_base",
+      "offset": 160,
+      "type": "u64"
+    },
+    {
+      "name": "k_scale_limit",
+      "offset": 168,
+      "type": "u64"
+    },
+    {
+      "name": "v_scale_base",
+      "offset": 176,
+      "type": "u64"
+    },
+    {
+      "name": "v_scale_limit",
+      "offset": 184,
+      "type": "u64"
+    },
+    {
+      "name": "attention_workspace_base",
+      "offset": 192,
+      "type": "u64"
+    },
+    {
+      "name": "attention_workspace_limit",
+      "offset": 200,
+      "type": "u64"
+    },
+    {
+      "name": "token_metadata_base",
+      "offset": 208,
+      "type": "u64"
+    },
+    {
+      "name": "token_metadata_limit",
+      "offset": 216,
+      "type": "u64"
+    },
+    {
+      "name": "embedding_base",
+      "offset": 224,
+      "type": "u64",
+      "alignment": 8192
+    },
+    {
+      "name": "embedding_limit",
+      "offset": 232,
+      "type": "u64"
+    },
+    {
+      "name": "forward_postprocess_configuration_base",
+      "offset": 240,
+      "type": "u64"
+    },
+    {
+      "name": "forward_postprocess_configuration_limit",
+      "offset": 248,
+      "type": "u64"
+    },
+    {
+      "name": "prediction_table_base",
+      "offset": 256,
+      "type": "u64"
+    },
+    {
+      "name": "prediction_table_limit",
+      "offset": 264,
+      "type": "u64"
+    },
+    {
+      "name": "layer_weight_entry_stride",
+      "offset": 272,
+      "type": "u32",
+      "minimum": 880,
+      "alignment": 16
+    },
+    {
+      "name": "embedding_row_bytes",
+      "offset": 276,
+      "type": "u32",
+      "constant": 8192
+    },
+    {
+      "name": "deployment_artifact_id",
+      "offset": 280,
+      "type": "u64"
+    },
+    {
+      "name": "token_metadata_entry_bytes",
+      "offset": 288,
+      "type": "u16",
+      "constant": 16
+    },
+    {
+      "name": "token_metadata_batch_header_bytes",
+      "offset": 290,
+      "type": "u16",
+      "constant": 32
+    },
+    {
+      "name": "forward_postprocess_configuration_bytes",
+      "offset": 292,
+      "type": "u16",
+      "constant": 192
+    },
+    {
+      "name": "prediction_entry_bytes",
+      "offset": 294,
+      "type": "u16",
+      "constant": 32
+    },
+    {
+      "name": "forward_postprocess_configuration_format",
+      "offset": 296,
+      "type": "u16",
+      "constant": 1
+    },
+    {
+      "name": "prediction_table_format",
+      "offset": 298,
+      "type": "u16",
+      "constant": 2
+    },
+    {
+      "name": "prediction_count",
+      "offset": 300,
+      "type": "u16",
+      "minimum": 0,
+      "maximum": 96
+    },
+    {
+      "name": "generation_block_count",
+      "offset": 302,
+      "type": "u8",
+      "minimum": 0,
+      "maximum": 4
+    },
+    {
+      "name": "suppressed_token_count",
+      "offset": 303,
+      "type": "u8",
+      "minimum": 0,
+      "maximum": 255
+    },
+    {
+      "name": "retained_k_scale_base",
+      "offset": 304,
+      "type": "u64"
+    },
+    {
+      "name": "retained_k_scale_limit",
+      "offset": 312,
+      "type": "u64"
+    }
+  ],
+  "flag_bits": {
+    "allow_bf16_temporary_spill": 0,
+    "prefer_on_chip_output": 1,
+    "forward_postprocess_enable": 2,
+    "lm_head_only": 3,
+    "ffn_pair_repeat": 4,
+    "ffn_four_batch": 5,
+    "ffn_six_batch": 6,
+    "ffn_fused_product": 7,
+    "ffn_down_pair": 8,
+    "attention_output_pair": 9,
+    "attention_pair": 10,
+    "kv_pair": 11,
+    "qkvo_group": 12,
+    "separate_l31_metadata": 13
+  }
+}

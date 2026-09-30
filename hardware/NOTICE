@@ -1,0 +1,10 @@
+SUPRA accelerator hardware
+
+The project-owned hardware, testbenches and tools are licensed under the provisional SUPRA Non-Commercial License (final terms TBD).
+Third-party components retain their original licenses and copyright notices:
+Paths below are relative to the hardware package root.
+
+- DRAMSim3: third_party/dramsim3/LICENSE and UPSTREAM.md
+- fmt: third_party/dramsim3/ext/fmt/LICENSE.rst
+- INIReader/inih: third_party/dramsim3/ext/headers/INIHLICENSE.txt
+- nlohmann/json: MIT notice embedded in third_party/dramsim3/ext/headers/json.hpp

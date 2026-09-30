@@ -1,0 +1,24 @@
+{
+  "task_config": "../../algorithm/llada/configs/gsm8k.json",
+  "prompt": "Question: A jewelry store is restocking its shelves. The necklace stand, which can hold 12 necklaces, currently holds 5 necklaces. The ring display, which can hold 30 rings, currently holds 18 rings. The bracelet display, which can hold 15 bracelets, currently holds 8 bracelets. The store’s supplier charges $4 per necklace, $10 per ring, and $5 per bracelet. How much, in dollars, will the store need to pay to fill the displays?\nAnswer: The necklace stand needs another 12 – 5 = <<12-5=7>>7 necklaces.\nThis will cost the store 7 * 4 = $<<7*4=28>>28.\nThe ring display needs another 30 – 18 = <<30-18=12>>12 rings.\nThis will cost the store 12 * 10 = $<<12*10=120>>120.\nThe bracelet display needs another 15 – 8 = <<15-8=7>>7 bracelets.\nThis will cost the store 7 * 5 = $<<7*5=35>>35.\nIn total, the store needs to pay 28 + 120 +35 = $<<28+120+35=183>>183.\n#### 183\n\nQuestion: On Tuesday, Max's mom gave him $8 dollars for a hot dog at the Grand Boulevard park. On Wednesday, his mom gave him 5 times as much money as she gave him on Tuesday. On Thursday, his mom gave him $9 more in money than she gave him on Wednesday. How much more money did his mom give him on Thursday than she gave him on Tuesday?\nAnswer: On Wednesday Max was given 8*5 = <<8*5=40>>40 dollars\nOn Thursday Max was given 40+9 = <<40+9=49>>49 dollars\nMax’s mom gave him 49-8 = <<49-8=41>>41 more dollars on Thursday than she gave him on Tuesday.\n#### 41\n\nQuestion: Kim has 4 dozen shirts.  She lets her sister have 1/3 of them.  How many shirts does she have left?\nAnswer: She had 4*12=<<4*12=48>>48 shirts to start with\nShe gives away 48/3=<<48/3=16>>16\nSo she has 48-16=<<48-16=32>>32 left\n#### 32\n\nQuestion: A river is to be used for a boat race. If each boat is 3 feet across and they must have at least 2 feet between them or the riverbank, how many boats can race in a river that is 42 feet across?\nAnswer: Each boat will require 3 feet across to fit itself and 2 feet space on one side for a total of 2+3 = <<3+2=5>>5 feet per boat\nThe last boat will need an additional 2 feet space on its other side, so this 2 feet should be subtracted first from the 42 feet which leaves 42-2 = <<42-2=40>>40 feet\n5 feet per boat on the remaining 40 feet for a total of 40/5 = <<40/5=8>>8 boats\n#### 8\n\nQuestion: Two cars are driving on a highway.  The first car is traveling at an average speed of 60 miles per hour when the second car passes it at an average speed of 70 miles per hour.  If both cars continue on the highway at the same speed, how many miles will separate them after 2 hours?\nAnswer:",
+  "question_char_start": 2266,
+  "sample_id": "gsm8k/test/804",
+  "dataset": "gsm8k/main",
+  "split": "test",
+  "fewshot": 4,
+  "model_args": {
+    "model_path": "/absolute/path/to/model/model_metadata",
+    "spinquant_artifact_dir": "/absolute/path/to/model/artifact_w8_head",
+    "silu_table": "/absolute/path/to/model/silu_table_monotone.json"
+  },
+  "generation_args": {
+    "until": [
+      "Question:",
+      "</s>",
+      "<|im_end|>"
+    ],
+    "do_sample": false,
+    "temperature": 0,
+    "max_gen_toks": 256
+  }
+}

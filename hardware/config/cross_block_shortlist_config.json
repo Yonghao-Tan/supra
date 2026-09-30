@@ -1,0 +1,65 @@
+{
+  "schema": "supra-cross-block-shortlist-config/v1",
+  "endianness": "little",
+  "size_bytes": 32,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "pending_base",
+      "offset": 0,
+      "type": "u64"
+    },
+    {
+      "name": "pending_limit",
+      "offset": 8,
+      "type": "u64"
+    },
+    {
+      "name": "shortlist_token_count",
+      "offset": 16,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 800
+    },
+    {
+      "name": "flags",
+      "offset": 18,
+      "type": "u16",
+      "valid_mask": "0xf",
+      "default": 0
+    },
+    {
+      "name": "relative_score_floor_bf16",
+      "offset": 20,
+      "type": "u16",
+      "maximum": 16000,
+      "default": 0
+    },
+    {
+      "name": "protected_begin",
+      "offset": 22,
+      "type": "u16",
+      "maximum": 2048,
+      "default": 0
+    },
+    {
+      "name": "protected_end",
+      "offset": 24,
+      "type": "u16",
+      "maximum": 2048,
+      "default": 0
+    },
+    {
+      "name": "reserved0",
+      "offset": 26,
+      "type": "u16",
+      "constant": 0
+    },
+    {
+      "name": "reserved1",
+      "offset": 28,
+      "type": "u32",
+      "constant": 0
+    }
+  ]
+}

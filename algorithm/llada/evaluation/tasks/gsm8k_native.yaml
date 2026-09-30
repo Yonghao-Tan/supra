@@ -1,0 +1,2 @@
+include: gsm8k_base.yaml
+task: gsm8k_native

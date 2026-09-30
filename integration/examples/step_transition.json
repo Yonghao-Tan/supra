@@ -1,0 +1,16 @@
+[
+  {
+    "name": "first",
+    "capture_index": 15,
+    "first_layer": 30,
+    "layer_count": 2,
+    "include_head": true,
+    "control_state": true
+  },
+  {
+    "name": "next",
+    "capture_index": 16,
+    "first_layer": 0,
+    "layer_count": 1
+  }
+]

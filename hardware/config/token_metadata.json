@@ -1,0 +1,172 @@
+{
+  "schema": "supra-token-metadata/v3",
+  "endianness": "little",
+  "alignment_bytes": 16,
+  "maximum_total_tokens": 2048,
+  "maximum_token_batches": 64,
+  "maximum_resident_tokens": 48,
+  "token_batch_header": {
+    "size_bytes": 32,
+    "fields": [
+      {
+        "name": "resident_token_count",
+        "offset": 0,
+        "type": "u8"
+      },
+      {
+        "name": "compute_group_count",
+        "offset": 1,
+        "type": "u8"
+      },
+      {
+        "name": "semantic_group_count",
+        "offset": 2,
+        "type": "u8"
+      },
+      {
+        "name": "flags",
+        "offset": 3,
+        "type": "u8",
+        "valid_mask": "0x07"
+      },
+      {
+        "name": "token_batch_index",
+        "offset": 4,
+        "type": "u16"
+      },
+      {
+        "name": "first_token_ordinal",
+        "offset": 6,
+        "type": "u16"
+      },
+      {
+        "name": "token_batch_bytes",
+        "offset": 8,
+        "type": "u16"
+      },
+      {
+        "name": "token_entry_bytes",
+        "offset": 10,
+        "type": "u16",
+        "constant": 16
+      },
+      {
+        "name": "inverse_offset",
+        "offset": 12,
+        "type": "u16"
+      },
+      {
+        "name": "inverse_bytes",
+        "offset": 14,
+        "type": "u16"
+      },
+      {
+        "name": "metadata_version",
+        "offset": 16,
+        "type": "u32"
+      },
+      {
+        "name": "capture_index",
+        "offset": 20,
+        "type": "u32"
+      },
+      {
+        "name": "kv_write_disable_mask",
+        "offset": 24,
+        "type": "u48"
+      },
+      {
+        "name": "output_token_count",
+        "offset": 30,
+        "type": "u8",
+        "maximum": 48
+      },
+      {
+        "name": "output_compute_group_count",
+        "offset": 31,
+        "type": "u8",
+        "maximum": 48
+      }
+    ],
+    "flag_bits": {
+      "embedding_source_present": 0,
+      "last_layer_output_subset": 1,
+      "qkvo_group_end": 2
+    }
+  },
+  "token_entry": {
+    "size_bytes": 16,
+    "fields": [
+      {
+        "name": "source_index",
+        "offset": 0,
+        "type": "u32"
+      },
+      {
+        "name": "token_position",
+        "offset": 4,
+        "type": "u16"
+      },
+      {
+        "name": "kv_index",
+        "offset": 6,
+        "type": "u16"
+      },
+      {
+        "name": "token_ordinal",
+        "offset": 8,
+        "type": "u8"
+      },
+      {
+        "name": "source",
+        "offset": 9,
+        "type": "u8"
+      },
+      {
+        "name": "activation_bits",
+        "offset": 10,
+        "type": "u8"
+      },
+      {
+        "name": "query_group",
+        "offset": 11,
+        "type": "u8"
+      },
+      {
+        "name": "cache_group",
+        "offset": 12,
+        "type": "u8"
+      },
+      {
+        "name": "compute_group",
+        "offset": 13,
+        "type": "u8"
+      },
+      {
+        "name": "pe_slot",
+        "offset": 14,
+        "type": "u8"
+      },
+      {
+        "name": "phase_mask",
+        "offset": 15,
+        "type": "u8"
+      }
+    ],
+    "source_values": {
+      "resident_hidden": 0,
+      "embedding_token": 1
+    },
+    "phase_mask_values": {
+      "phase0": 1,
+      "phase1": 2,
+      "both": 3
+    }
+  },
+  "inverse_table": {
+    "element_type": "u8",
+    "element_count": "resident_token_count",
+    "meaning": "token_ordinal to physical_row",
+    "padded_bytes": "align_up(resident_token_count, 16)"
+  }
+}

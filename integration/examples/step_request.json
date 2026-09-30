@@ -1,0 +1,24 @@
+{
+  "task_config": "../../algorithm/llada/configs/gsm8k.json",
+  "prompt": "Question: A casino table pays 3:2 if you get a blackjack with your first 2 cards. If you scored a blackjack and were paid $60, what was your original bet?\nAnswer: The payout for blackjack is 3:2 or 3/2=1.5 times my bet\nIf my original bet was X then I won 1.5*X my bet\nGiven that I was paid $60 we know $60 = 1.5X\nX=$60/1.5\nX=$<<40=40>>40 was my original bet\n#### 40\n\nQuestion: In the engineering department, 70% of the students are men and 180 are women. How many men are there?\nAnswer: The percentage for women is 100% - 70% = 30%.\nSince 180 represents 30%, then 180/30 = 6 students represent 1%.\nHence, 6 x 70 = <<6*70=420>>420 students are men.\n#### 420\n\nQuestion: In Grade 4, there are two sections -- Diligence and Industry. The two sections have an equal number of students after 2 students were transferred from section Industry to Diligence. How many students were there in section Diligence before the transfer if, in both sections combined, there are a total of 50 students?\nAnswer: There are 50/2 = <<50/2=25>>25 students in each section now.\nSo, there were 25 - 2 = <<25-2=23>>23 students in section Diligence before 2 students were transferred in their section.\n#### 23\n\nQuestion: Joshua, Jose, and Albert are collecting rocks. Joshua collected 80 rocks while Jose collected 14 fewer rocks. Albert has collected 20 more rocks than Jose. How many more rocks did Albert collect than Joshua?\nAnswer: Jose collected 80 - 14 = <<80-14=66>>66 rocks.\nAlbert collected 66 + 20 = <<66+20=86>>86 rocks.\nThus, Albert collected 86 - 80 = <<86-80=6>>6 more rocks than Joshua.\n#### 6\n\nQuestion: Marcus is half of Leo’s age and five years younger than Deanna. Deanna is 26. How old is Leo?\nAnswer:",
+  "question_char_start": 1584,
+  "sample_id": "gsm8k/test/949",
+  "dataset": "gsm8k/main",
+  "split": "test",
+  "fewshot": 4,
+  "model_args": {
+    "model_path": "/absolute/path/to/model/model_metadata",
+    "spinquant_artifact_dir": "/absolute/path/to/model/artifact_w8_head",
+    "silu_table": "/absolute/path/to/model/silu_table_monotone.json"
+  },
+  "generation_args": {
+    "until": [
+      "Question:",
+      "</s>",
+      "<|im_end|>"
+    ],
+    "do_sample": false,
+    "temperature": 0,
+    "max_gen_toks": 256
+  }
+}

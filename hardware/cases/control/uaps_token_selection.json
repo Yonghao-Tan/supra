@@ -1,0 +1,2707 @@
+{
+  "schema": "supra-uaps-token-selection/v1",
+  "source": "generation.lookahead",
+  "target_joint_tokens": 48,
+  "max_next_tokens": 32,
+  "records": [
+    {
+      "name": "base27_add8",
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            27
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 13,
+          "a8_token_count": 14,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 83968,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 251904,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 21,
+          "a8_token_count": 14,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 143360,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 100352,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 301056,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 13,
+          "a8_token_count": 22,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 143360,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 116736,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 350208,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 0,
+        "rejected_for_budget": 0
+      }
+    },
+    {
+      "name": "forecast_capacity",
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            46
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            46
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            46
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            1
+          ],
+          "raw": [
+            0
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            1
+          ],
+          "raw": [
+            0
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            1
+          ],
+          "raw": [
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 30,
+          "a8_token_count": 16,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 188416,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 126976,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 380928,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 31,
+          "a8_token_count": 16,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 192512,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 129024,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 387072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 30,
+          "a8_token_count": 17,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 192512,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 393216,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 1,
+        "rejected_for_budget": 6
+      }
+    },
+    {
+      "name": "overlap_mixed_order",
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            64,
+            65,
+            66
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            1,
+            0,
+            2,
+            4,
+            3,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            5
+          ],
+          "raw": [
+            4,
+            3,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            5
+          ],
+          "raw": [
+            8,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 29,
+          "a8_token_count": 3,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 71680,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 215040,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 33,
+          "a8_token_count": 4,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 151552,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 83968,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 251904,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 29,
+          "a8_token_count": 8,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 151552,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 92160,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 276480,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 0,
+        "rejected_for_budget": 0
+      }
+    },
+    {
+      "name": "no_future",
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            27
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 13,
+          "a8_token_count": 14,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 83968,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 251904,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 13,
+          "a8_token_count": 14,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 83968,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 251904,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 13,
+          "a8_token_count": 14,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 83968,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 251904,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 0,
+        "rejected_for_budget": 0
+      }
+    },
+    {
+      "name": "reuse_floor_equal",
+      "min_reuse_score_bf16": 16128,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            27
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            64,
+            65,
+            66
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            6
+          ],
+          "raw": [
+            2,
+            0,
+            7,
+            5,
+            3,
+            6
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            7,
+            5,
+            3,
+            6
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            4
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "issued_slice_units": 32,
+          "pe_issue_groups": 2,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 61440,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 184320,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 24,
+          "a8_token_count": 3
+        },
+        "joint_residency": {
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 126976,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 69632,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 208896,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 28,
+          "a8_token_count": 3
+        },
+        "next_step_verification_residency": {
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 126976,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 77824,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 233472,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 24,
+          "a8_token_count": 7
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 0,
+        "rejected_for_budget": 0
+      }
+    },
+    {
+      "name": "reuse_floor_above",
+      "min_reuse_score_bf16": 16129,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            27
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            64,
+            65,
+            66
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            27
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 64,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            8,
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256,
+            16128,
+            16000,
+            16256,
+            16128,
+            16000,
+            16192,
+            16128,
+            16256
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            2,
+            7,
+            5
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            2
+          ],
+          "raw": [
+            7,
+            5
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            2
+          ],
+          "raw": [
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "issued_slice_units": 32,
+          "pe_issue_groups": 2,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 110592,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 61440,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 184320,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 24,
+          "a8_token_count": 3
+        },
+        "joint_residency": {
+          "issued_slice_units": 32,
+          "pe_issue_groups": 2,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 118784,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 65536,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 196608,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 26,
+          "a8_token_count": 3
+        },
+        "next_step_verification_residency": {
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 118784,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 69632,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 208896,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ],
+          "a4_token_count": 24,
+          "a8_token_count": 5
+        },
+        "rejected_for_current_step_capacity": 0,
+        "rejected_for_next_step_verification_capacity": 0,
+        "rejected_for_budget": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+SUPRA algorithm, quantization, C-model, RTL and evaluation framework
+
+SUPRA contributions use the provisional Non-Commercial License (final terms TBD).
+Algorithm attribution and revisions: algorithm/UPSTREAM.md.
+Hardware third-party licenses and revisions: hardware/NOTICE.
+Third-party code retains its original notices and licenses.
+Model artifacts and datasets are obtained separately under their licenses.

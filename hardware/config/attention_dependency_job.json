@@ -1,0 +1,70 @@
+{
+  "schema": "supra-attention-dependency-job/v1",
+  "endianness": "little",
+  "size_bytes": 64,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "source_base",
+      "offset": 0,
+      "type": "u64"
+    },
+    {
+      "name": "head_stride",
+      "offset": 8,
+      "type": "u32",
+      "minimum": 16,
+      "alignment": 16
+    },
+    {
+      "name": "lane_mask",
+      "offset": 12,
+      "type": "u8"
+    },
+    {
+      "name": "operation",
+      "offset": 13,
+      "type": "u8",
+      "valid_mask": "0x1f"
+    },
+    {
+      "name": "reserved0",
+      "offset": 14,
+      "type": "u16",
+      "constant": 0
+    },
+    {
+      "name": "output_base",
+      "offset": 16,
+      "type": "u64"
+    },
+    {
+      "name": "source_limit",
+      "offset": 24,
+      "type": "u64"
+    },
+    {
+      "name": "output_limit",
+      "offset": 32,
+      "type": "u64"
+    },
+    {
+      "name": "reserved1",
+      "offset": 40,
+      "type": "u64",
+      "constant": 0
+    },
+    {
+      "name": "reserved2",
+      "offset": 48,
+      "type": "u64",
+      "constant": 0
+    },
+    {
+      "name": "reserved3",
+      "offset": 56,
+      "type": "u64",
+      "constant": 0
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "schema": "supra-testcase/v1",
+  "ddr_image": "initial.bin",
+  "memory_map": "memory_map.json",
+  "dramsim3_config": "dram.ini",
+  "initial_segments": [
+    {
+      "address": 1627521024,
+      "bytes": 304,
+      "path": "initial_metadata.bin"
+    },
+    {
+      "address": 1627389952,
+      "bytes": 320,
+      "path": "initial_layer31_config.bin"
+    },
+    {
+      "address": 1627482768,
+      "bytes": 624,
+      "path": "initial_layer31_table.bin"
+    },
+    {
+      "address": 270008320,
+      "bytes": 64,
+      "path": "initial_v_scale.bin"
+    },
+    {
+      "address": 1627394048,
+      "bytes": 320,
+      "path": "regular_layer0_config.bin"
+    },
+    {
+      "address": 1627455488,
+      "bytes": 624,
+      "path": "regular_layer0_table.bin"
+    }
+  ],
+  "executions": [
+    {
+      "config_address": 1627389952,
+      "id": 1346506752,
+      "max_cycles": 50000000
+    },
+    {
+      "config_address": 268435456,
+      "id": 1346502657,
+      "max_cycles": 2000000,
+      "expected_post_block_completions": [
+        false
+      ]
+    },
+    {
+      "config_address": 1627394048,
+      "id": 1346506753,
+      "max_cycles": 50000000,
+      "check_embedding_reads": true,
+      "handoff_actions": [
+        {
+          "kind": "execution_from_metadata",
+          "config_address": 1627394048,
+          "metadata_address": 269336576,
+          "metadata_capacity": 1696,
+          "output_address": 1629487104
+        }
+      ]
+    }
+  ],
+  "expected": [
+    {
+      "name": "post_state",
+      "address": 269316096,
+      "bytes": 2048,
+      "path": "expected.post_state.bin"
+    },
+    {
+      "name": "post_event",
+      "address": 269320192,
+      "bytes": 128,
+      "path": "expected.post_event.bin"
+    },
+    {
+      "name": "post_completion",
+      "address": 269324288,
+      "bytes": 16,
+      "path": "expected.post_completion.bin"
+    },
+    {
+      "name": "post_metadata",
+      "address": 269332480,
+      "bytes": 1696,
+      "path": "expected.post_metadata.bin"
+    },
+    {
+      "name": "post_joint_metadata",
+      "address": 269336576,
+      "bytes": 1696,
+      "path": "expected.post_joint_metadata.bin"
+    },
+    {
+      "name": "post_pending",
+      "address": 269369344,
+      "bytes": 1024,
+      "path": "expected.post_pending.bin"
+    },
+    {
+      "name": "post_budget",
+      "address": 269389824,
+      "bytes": 16,
+      "path": "expected.post_budget.bin"
+    },
+    {
+      "name": "post_joint_result",
+      "address": 269389856,
+      "bytes": 16,
+      "path": "expected.post_joint_result.bin"
+    },
+    {
+      "name": "post_attempts",
+      "address": 269393920,
+      "bytes": 144,
+      "path": "expected.post_attempts.bin"
+    },
+    {
+      "name": "next_hidden",
+      "address": 1629487104,
+      "bytes": 786432,
+      "path": "expected.next_hidden.bin"
+    }
+  ]
+}

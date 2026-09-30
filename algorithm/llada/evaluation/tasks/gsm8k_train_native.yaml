@@ -1,0 +1,5 @@
+include: gsm8k_base.yaml
+task: gsm8k_train_native
+test_split: train
+# ContextSampler draws one extra example and excludes the target when
+# fewshot_split == test_split. Seeds and formatting match native test.

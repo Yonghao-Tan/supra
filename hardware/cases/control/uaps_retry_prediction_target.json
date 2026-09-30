@@ -1,0 +1,4326 @@
+{
+  "schema": "supra-uaps-token-selection/v1",
+  "target_joint_tokens": 48,
+  "max_next_tokens": 8,
+  "records": [
+    {
+      "name": "retry_first_reused_future_token_tentative_threshold_edges",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            1,
+            2,
+            0,
+            4
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            2,
+            0,
+            4
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            3
+          ],
+          "raw": [
+            8,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 30,
+          "a8_token_count": 1,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 4,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "retry_without_attempt_cap",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": -1,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            1,
+            2,
+            0,
+            4
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            2,
+            0,
+            4
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            3
+          ],
+          "raw": [
+            8,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 30,
+          "a8_token_count": 1,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 4,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "target_disabled",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": -1,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            6
+          ],
+          "raw": [
+            1,
+            2,
+            0,
+            4,
+            5,
+            7
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            5
+          ],
+          "raw": [
+            2,
+            0,
+            4,
+            5,
+            7
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            5
+          ],
+          "raw": [
+            8,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 32,
+          "a8_token_count": 1,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 6,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "retry_disabled",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 0,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            1,
+            2,
+            0,
+            3
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            2,
+            0,
+            3
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            3
+          ],
+          "raw": [
+            8,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 30,
+          "a8_token_count": 1,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 4,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "both_disabled",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 0,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": -1,
+        "future_admission_retry_min_confidence": 0,
+        "prediction_token_target": -1,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            1,
+            2,
+            0,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            7
+          ],
+          "raw": [
+            2,
+            0,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            7
+          ],
+          "raw": [
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 34,
+          "a8_token_count": 1,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 8,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "target_reached",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 24
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        }
+      }
+    },
+    {
+      "name": "target_exceeded",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 16,
+        "current_prediction_tokens": 24
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        }
+      }
+    },
+    {
+      "name": "target_due_added_reservation",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            33,
+            36
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 23
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            2
+          ],
+          "raw": [
+            2,
+            3
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            2
+          ],
+          "raw": [
+            2,
+            3
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            2
+          ],
+          "raw": [
+            8,
+            8
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 2,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 2,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        }
+      }
+    },
+    {
+      "name": "target_due_existing_and_added",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            33,
+            36
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 24
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            1,
+            2,
+            3
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            2
+          ],
+          "raw": [
+            2,
+            3
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            2
+          ],
+          "raw": [
+            8,
+            8
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 2,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 3,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "target_due_above_max_next",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            33,
+            36
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            12
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            12
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            12
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            12
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872,
+            15744,
+            15744,
+            15744,
+            15744
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            12
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            12
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            12
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128,
+            16128,
+            16128,
+            16128,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 24
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 8,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 8,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "forecast_capacity_rejection",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            1
+          ],
+          "raw": [
+            1
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 32,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 32,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 0,
+          "a8_token_count": 32,
+          "issued_activation_slots": 64,
+          "pe_issue_groups": 4
+        }
+      }
+    },
+    {
+      "name": "all_first_attempts",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            -16512,
+            -16512,
+            -16512,
+            -16512,
+            -16512,
+            -16512,
+            -16512
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            4
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 32,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 4,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "retry_suppressed_zero",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 16000,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "max_future_admission_attempts": 3,
+        "future_admission_retry_min_confidence": 0.25,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            0
+          ],
+          "raw": []
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        }
+      }
+    },
+    {
+      "name": "target_64",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 0,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": -1,
+        "future_admission_retry_min_confidence": 0,
+        "prediction_token_target": 64,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            1,
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            7
+          ],
+          "raw": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            7
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 35,
+          "a8_token_count": 0,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 8,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    },
+    {
+      "name": "target_only_no_attempt_state",
+      "kind": "added_future_token_selection",
+      "retry_min_confidence_bf16": 0,
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            28
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            33
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            28
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 32,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            8
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            8
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            16256,
+            16224,
+            16192,
+            16160,
+            16128,
+            16064,
+            16000,
+            15872
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "future_admission_attempts": {
+          "dtype": "torch.int32",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "next_last_confidence": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            8
+          ],
+          "raw": [
+            -16512,
+            0,
+            0,
+            15999,
+            16000,
+            16001,
+            0,
+            16128
+          ]
+        },
+        "max_future_admission_attempts": -1,
+        "future_admission_retry_min_confidence": 0,
+        "prediction_token_target": 24,
+        "current_prediction_tokens": 20
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            4
+          ],
+          "raw": [
+            1,
+            0,
+            2,
+            3
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            3
+          ],
+          "raw": [
+            0,
+            2,
+            3
+          ]
+        },
+        "added_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            3
+          ],
+          "raw": [
+            4,
+            4,
+            4
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 28,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "joint_residency": {
+          "a4_token_count": 31,
+          "a8_token_count": 0,
+          "issued_activation_slots": 32,
+          "pe_issue_groups": 2
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 27,
+          "a8_token_count": 4,
+          "issued_activation_slots": 48,
+          "pe_issue_groups": 3
+        }
+      }
+    }
+  ]
+}

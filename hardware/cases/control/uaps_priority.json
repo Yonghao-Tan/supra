@@ -1,0 +1,1749 @@
+{
+  "schema": "supra-uaps-priority/v1",
+  "target_joint_tokens": 48,
+  "max_next_tokens": 32,
+  "records": [
+    {
+      "name": "generator_forward_0",
+      "available": 32,
+      "low_dependency": true,
+      "dependency": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "tentative": {
+        "dtype": "torch.bool",
+        "shape": [
+          32
+        ],
+        "raw": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "existing_local": {
+        "dtype": "torch.int64",
+        "shape": [
+          0
+        ],
+        "raw": []
+      },
+      "expected_priority": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          16256,
+          16248,
+          16240,
+          16231,
+          16223,
+          16215,
+          16206,
+          16198,
+          16190,
+          16182,
+          16174,
+          16165,
+          16157,
+          16148,
+          16140,
+          16132,
+          16120,
+          16104,
+          16086,
+          16070,
+          16054,
+          16038,
+          16020,
+          16004,
+          15976,
+          15944,
+          15908,
+          15876,
+          15816,
+          15752,
+          15616,
+          0
+        ]
+      },
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            32
+          ],
+          "raw": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 33,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16248,
+            16240,
+            16231,
+            16223,
+            16215,
+            16206,
+            16198,
+            16190,
+            16182,
+            16174,
+            16165,
+            16157,
+            16148,
+            16140,
+            16132,
+            16120,
+            16104,
+            16086,
+            16070,
+            16054,
+            16038,
+            16020,
+            16004,
+            15976,
+            15944,
+            15908,
+            15876,
+            15816,
+            15752,
+            15616,
+            0
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            12
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            12
+          ],
+          "raw": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 24,
+          "a8_token_count": 8,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 81920,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 245760,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 36,
+          "a8_token_count": 8,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 180224,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 106496,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 319488,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 24,
+          "a8_token_count": 20,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 180224,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 393216,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "generator_forward_1",
+      "available": 32,
+      "low_dependency": true,
+      "dependency": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "tentative": {
+        "dtype": "torch.bool",
+        "shape": [
+          32
+        ],
+        "raw": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "existing_local": {
+        "dtype": "torch.int64",
+        "shape": [
+          0
+        ],
+        "raw": []
+      },
+      "expected_priority": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          16256,
+          16248,
+          16240,
+          16231,
+          16223,
+          16215,
+          16206,
+          16198,
+          16190,
+          16182,
+          16174,
+          16165,
+          16157,
+          16148,
+          16140,
+          16132,
+          16120,
+          16104,
+          16086,
+          16070,
+          16054,
+          16038,
+          16020,
+          16004,
+          15976,
+          15944,
+          15908,
+          15876,
+          15816,
+          15752,
+          15616,
+          0
+        ]
+      },
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            32
+          ],
+          "raw": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 33,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            8,
+            8,
+            8,
+            4,
+            8,
+            8,
+            8,
+            4,
+            4,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16248,
+            16240,
+            16231,
+            16223,
+            16215,
+            16206,
+            16198,
+            16190,
+            16182,
+            16174,
+            16165,
+            16157,
+            16148,
+            16140,
+            16132,
+            16120,
+            16104,
+            16086,
+            16070,
+            16054,
+            16038,
+            16020,
+            16004,
+            15976,
+            15944,
+            15908,
+            15876,
+            15816,
+            15752,
+            15616,
+            0
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            8,
+            9,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            8
+          ],
+          "raw": [
+            0,
+            4,
+            8,
+            9,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 16,
+          "a8_token_count": 16,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 98304,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 294912,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 24,
+          "a8_token_count": 16,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 163840,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 114688,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 344064,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 16,
+          "a8_token_count": 24,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 163840,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 393216,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "generator_forward_2",
+      "available": 32,
+      "low_dependency": true,
+      "dependency": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "tentative": {
+        "dtype": "torch.bool",
+        "shape": [
+          32
+        ],
+        "raw": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "existing_local": {
+        "dtype": "torch.int64",
+        "shape": [
+          0
+        ],
+        "raw": []
+      },
+      "expected_priority": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          32
+        ],
+        "raw": [
+          16256,
+          16248,
+          16240,
+          16231,
+          16223,
+          16215,
+          16206,
+          16198,
+          16190,
+          16182,
+          16174,
+          16165,
+          16157,
+          16148,
+          16140,
+          16132,
+          16120,
+          16104,
+          16086,
+          16070,
+          16054,
+          16038,
+          16020,
+          16004,
+          15976,
+          15944,
+          15908,
+          15876,
+          15816,
+          15752,
+          15616,
+          0
+        ]
+      },
+      "inputs": {
+        "base_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            32
+          ],
+          "raw": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ]
+        },
+        "base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_step_base_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_block_start": 33,
+        "next_activation_bits": {
+          "dtype": "torch.int8",
+          "shape": [
+            32
+          ],
+          "raw": [
+            4,
+            8,
+            8,
+            8,
+            4,
+            8,
+            8,
+            8,
+            4,
+            8,
+            8,
+            8,
+            4,
+            8,
+            8,
+            8,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "next_unresolved": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            true,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "next_tentative": {
+          "dtype": "torch.bool",
+          "shape": [
+            32
+          ],
+          "raw": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "next_priority": {
+          "dtype": "torch.bfloat16",
+          "shape": [
+            32
+          ],
+          "raw": [
+            16256,
+            16248,
+            16240,
+            16231,
+            16223,
+            16215,
+            16206,
+            16198,
+            16190,
+            16182,
+            16174,
+            16165,
+            16157,
+            16148,
+            16140,
+            16132,
+            16120,
+            16104,
+            16086,
+            16070,
+            16054,
+            16038,
+            16020,
+            16004,
+            15976,
+            15944,
+            15908,
+            15876,
+            15816,
+            15752,
+            15616,
+            0
+          ]
+        },
+        "next_service_count": {
+          "dtype": "torch.int32",
+          "shape": [
+            32
+          ],
+          "raw": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected": {
+        "progress_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            11
+          ],
+          "raw": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ]
+        },
+        "added_local_positions": {
+          "dtype": "torch.int64",
+          "shape": [
+            11
+          ],
+          "raw": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ]
+        },
+        "base_residency": {
+          "a4_token_count": 22,
+          "a8_token_count": 10,
+          "issued_slice_units": 48,
+          "pe_issue_groups": 3,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 86016,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 258048,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "joint_residency": {
+          "a4_token_count": 33,
+          "a8_token_count": 10,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 176128,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 108544,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 325632,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        },
+        "next_step_verification_residency": {
+          "a4_token_count": 22,
+          "a8_token_count": 21,
+          "issued_slice_units": 64,
+          "pe_issue_groups": 4,
+          "operators": [
+            {
+              "name": "qkv_k4096_all_a8",
+              "activation_bytes": 176128,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "mixed_linear_k4096",
+              "activation_bytes": 131072,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            },
+            {
+              "name": "ffn_down_k12288",
+              "activation_bytes": 393216,
+              "capacity_bytes": 393216,
+              "fragments": 1,
+              "weight_read_multiplier": 1
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

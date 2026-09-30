@@ -1,0 +1,22 @@
+`default_nettype none
+
+package attention_probability_config_pkg;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_BYTES = 80;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_ALIGNMENT = 16;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_OUTPUT_BASE_OFFSET = 0;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_OUTPUT_LIMIT_OFFSET = 8;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_BATCH_STRIDE_BYTES_OFFSET = 16;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_HEAD_STRIDE_BYTES_OFFSET = 20;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_ROUND_STRIDE_BYTES_OFFSET = 24;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_LAYER_MASK_OFFSET = 28;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_KEY_GROUPS0_OFFSET = 32;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_KEY_GROUPS1_OFFSET = 40;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_KEY_GROUPS2_OFFSET = 48;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_KEY_GROUPS3_OFFSET = 56;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_QUERY_BEGIN_OFFSET = 64;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_QUERY_END_OFFSET = 66;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_CAPTURE_P8_OFFSET = 68;
+    localparam int unsigned ATTENTION_PROBABILITY_CONFIG_SHORTLIST_CONFIGURATION_BASE_OFFSET = 72;
+endpackage
+
+`default_nettype wire

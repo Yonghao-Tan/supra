@@ -1,0 +1,104 @@
+{
+  "schema": "supra-draft-verify-block-config/v1",
+  "endianness": "little",
+  "size_bytes": 32,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "block_slot",
+      "offset": 0,
+      "type": "u8",
+      "maximum": 3
+    },
+    {
+      "name": "global_block_id",
+      "offset": 1,
+      "type": "u8",
+      "maximum": 63
+    },
+    {
+      "name": "flags",
+      "offset": 2,
+      "type": "u16",
+      "valid_mask": "0x3fff"
+    },
+    {
+      "name": "scheduled_quota",
+      "offset": 4,
+      "type": "u16",
+      "maximum": 32
+    },
+    {
+      "name": "remaining_forwards",
+      "offset": 6,
+      "type": "u16",
+      "minimum": 1
+    },
+    {
+      "name": "step_index",
+      "offset": 8,
+      "type": "u16"
+    },
+    {
+      "name": "tail_after_step",
+      "offset": 10,
+      "type": "u16"
+    },
+    {
+      "name": "maturity_age",
+      "offset": 12,
+      "type": "u16",
+      "minimum": 1
+    },
+    {
+      "name": "position_count",
+      "offset": 14,
+      "type": "u16",
+      "minimum": 1,
+      "maximum": 32
+    },
+    {
+      "name": "capture_index",
+      "offset": 16,
+      "type": "u32"
+    },
+    {
+      "name": "current_state_entry",
+      "offset": 20,
+      "type": "u8",
+      "maximum": 127
+    },
+    {
+      "name": "input_slot_override",
+      "offset": 21,
+      "type": "u8",
+      "maximum": 4,
+      "default": 0
+    },
+    {
+      "name": "next_state_entry",
+      "offset": 22,
+      "type": "u16",
+      "maximum": 127
+    },
+    {
+      "name": "input_capture_index",
+      "offset": 24,
+      "type": "u32"
+    },
+    {
+      "name": "observed_mask",
+      "offset": 28,
+      "type": "u32",
+      "default": 0
+    }
+  ],
+  "flag_bits": {
+    "tail_threshold_enable": 0,
+    "canonical_future": 1,
+    "tail_bypass_all": 2,
+    "tail_bypass_stable_only": 6,
+    "transfer_only": 5,
+    "source_a_handoff": 7
+  }
+}

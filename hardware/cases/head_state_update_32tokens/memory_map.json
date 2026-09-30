@@ -1,0 +1,304 @@
+{
+  "base_address": 268435456,
+  "current_ddr_image_bytes": 2097152,
+  "limit_address": 8858370048,
+  "logical_aperture_bytes": 8589934592,
+  "memory_map": [
+    {
+      "name": "nonzero_transformer_weights",
+      "base": 1879048192,
+      "limit": 2013265920,
+      "span_bytes": 134217728,
+      "access": "read_only",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "attention_probability_jobs_and_dependencies",
+      "base": 1610612736,
+      "limit": 1627389952,
+      "span_bytes": 16777216,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "handoff_forward_data",
+      "base": 1627389952,
+      "limit": 1745879040,
+      "span_bytes": 118489088,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 268435456,
+      "limit": 268436672,
+      "name": "run_configuration",
+      "span_bytes": 1216
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 268439552,
+      "limit": 268439584,
+      "name": "input_hidden_guard",
+      "span_bytes": 32
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 268500992,
+      "limit": 269287424,
+      "name": "final_hidden",
+      "span_bytes": 786432
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269287424,
+      "limit": 269287616,
+      "name": "forward_postprocess_configuration",
+      "span_bytes": 192
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269291520,
+      "limit": 269294592,
+      "name": "prediction_table",
+      "span_bytes": 3072
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269295616,
+      "limit": 269296512,
+      "name": "layer_address_table_guard",
+      "span_bytes": 896
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269299712,
+      "limit": 269301408,
+      "name": "token_metadata",
+      "span_bytes": 1696
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269312000,
+      "limit": 269316096,
+      "name": "current_state",
+      "span_bytes": 4096
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269316096,
+      "limit": 269320192,
+      "name": "next_state",
+      "span_bytes": 4096
+    },
+    {
+      "access": "write_only",
+      "alignment_bytes": 32,
+      "base": 269320192,
+      "limit": 269324288,
+      "name": "forward_events",
+      "span_bytes": 4096
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269324288,
+      "limit": 269324320,
+      "name": "completion_and_suppressed_tokens",
+      "span_bytes": 32
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269328384,
+      "limit": 269328512,
+      "name": "block_configuration",
+      "span_bytes": 128
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269332480,
+      "limit": 269334176,
+      "span_bytes": 1696,
+      "name": "next_token_metadata"
+    },
+    {
+      "name": "second_next_token_metadata",
+      "base": 269336576,
+      "limit": 269338272,
+      "span_bytes": 1696,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269352960,
+      "limit": 269369344,
+      "span_bytes": 16384,
+      "name": "refresh_table"
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269369344,
+      "limit": 269371904,
+      "span_bytes": 2560,
+      "name": "refresh_pending"
+    },
+    {
+      "access": "read_write",
+      "alignment_bytes": 32,
+      "base": 269373408,
+      "limit": 269383680,
+      "span_bytes": 10272,
+      "name": "refresh_relation"
+    },
+    {
+      "name": "refresh_budget",
+      "base": 269389824,
+      "limit": 269389856,
+      "span_bytes": 32,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "joint_result",
+      "base": 269389856,
+      "limit": 269389888,
+      "span_bytes": 32,
+      "access": "write_only",
+      "alignment_bytes": 32
+    },
+    {
+      "access": "read_only",
+      "alignment_bytes": 32,
+      "base": 269484032,
+      "limit": 269746304,
+      "name": "raw_w8_weight_and_scale",
+      "span_bytes": 262272
+    },
+    {
+      "name": "layer_k_scale",
+      "base": 269877248,
+      "limit": 270008320,
+      "span_bytes": 131072,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_v_scale",
+      "base": 270008320,
+      "limit": 270139392,
+      "span_bytes": 131072,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_weight",
+      "base": 285212672,
+      "limit": 318767104,
+      "span_bytes": 33554432,
+      "access": "read_only",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_weight_scale_and_gamma",
+      "base": 318767104,
+      "limit": 319029248,
+      "span_bytes": 262144,
+      "access": "read_only",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_rope_cos",
+      "base": 319815680,
+      "limit": 320339968,
+      "span_bytes": 524288,
+      "access": "read_only",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_rope_sin",
+      "base": 320864256,
+      "limit": 321388544,
+      "span_bytes": 524288,
+      "access": "read_only",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_current_k",
+      "base": 335544320,
+      "limit": 343932928,
+      "span_bytes": 8388608,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_current_v",
+      "base": 343932928,
+      "limit": 352321536,
+      "span_bytes": 8388608,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_retained_k",
+      "base": 352321536,
+      "limit": 360710144,
+      "span_bytes": 8388608,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_retained_v",
+      "base": 360710144,
+      "limit": 369098752,
+      "span_bytes": 8388608,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_context",
+      "base": 370147328,
+      "limit": 370671616,
+      "span_bytes": 524288,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "layer_temporary",
+      "base": 371195904,
+      "limit": 374341632,
+      "span_bytes": 3145728,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "uaps_attempt_state",
+      "base": 269393920,
+      "limit": 269394080,
+      "span_bytes": 160,
+      "access": "read_write",
+      "alignment_bytes": 32
+    },
+    {
+      "name": "step_embedding",
+      "base": 385875968,
+      "limit": 1421869056,
+      "span_bytes": 1035993088,
+      "access": "read_only",
+      "alignment_bytes": 32
+    }
+  ]
+}

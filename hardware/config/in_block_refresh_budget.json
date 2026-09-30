@@ -1,0 +1,43 @@
+{
+  "schema": "supra-in-block-refresh-budget/v1",
+  "endianness": "little",
+  "size_bytes": 16,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "target_token_count_x2",
+      "offset": 0,
+      "type": "u8",
+      "minimum": 2,
+      "maximum": 192
+    },
+    {
+      "name": "selection_control",
+      "offset": 1,
+      "type": "u8",
+      "default": 0,
+      "maximum": 0
+    },
+    {
+      "name": "region_start",
+      "offset": 2,
+      "type": "u16",
+      "maximum": 2047
+    },
+    {
+      "name": "token_count_x2_credit",
+      "offset": 4,
+      "type": "u32"
+    },
+    {
+      "name": "regular_steps",
+      "offset": 8,
+      "type": "u32"
+    },
+    {
+      "name": "cumulative_active_token_count",
+      "offset": 12,
+      "type": "u32"
+    }
+  ]
+}

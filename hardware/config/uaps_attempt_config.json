@@ -1,0 +1,89 @@
+{
+  "schema": "supra-uaps-attempt-config/v1",
+  "endianness": "little",
+  "size_bytes": 32,
+  "alignment_bytes": 16,
+  "fields": [
+    {
+      "name": "state_base",
+      "offset": 0,
+      "type": "u64",
+      "default": 0
+    },
+    {
+      "name": "state_limit",
+      "offset": 8,
+      "type": "u64",
+      "default": 0
+    },
+    {
+      "name": "max_attempts",
+      "offset": 16,
+      "type": "u32",
+      "maximum": 2147483647,
+      "default": 0
+    },
+    {
+      "name": "retry_min_confidence_bf16",
+      "offset": 20,
+      "type": "u16",
+      "maximum": 16256,
+      "default": 0
+    },
+    {
+      "name": "prediction_target",
+      "offset": 22,
+      "type": "u8",
+      "maximum": 64,
+      "default": 0
+    },
+    {
+      "name": "source_b_flags",
+      "offset": 23,
+      "type": "u8",
+      "valid_mask": "0x03",
+      "default": 0
+    },
+    {
+      "name": "min_reuse_score_bf16",
+      "offset": 24,
+      "type": "u16",
+      "maximum": 16256,
+      "default": 0
+    },
+    {
+      "name": "max_current_unresolved",
+      "offset": 26,
+      "type": "u8",
+      "maximum": 32,
+      "default": 0
+    },
+    {
+      "name": "max_handoff_tokens",
+      "offset": 27,
+      "type": "u8",
+      "maximum": 32,
+      "default": 0
+    },
+    {
+      "name": "admission_budget",
+      "offset": 28,
+      "type": "u8",
+      "maximum": 32,
+      "default": 0
+    },
+    {
+      "name": "state_control",
+      "offset": 29,
+      "type": "u8",
+      "valid_mask": "0x03",
+      "default": 0
+    },
+    {
+      "name": "block_step_index",
+      "offset": 30,
+      "type": "u16",
+      "default": 0
+    }
+  ]
+}

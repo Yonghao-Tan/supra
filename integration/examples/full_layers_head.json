@@ -1,0 +1,10 @@
+[
+  {
+    "name": "full32",
+    "capture_index": 17,
+    "first_layer": 0,
+    "layer_count": 32,
+    "include_head": true,
+    "control_state": true
+  }
+]
