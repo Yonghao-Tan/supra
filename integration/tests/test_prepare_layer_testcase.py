@@ -275,7 +275,7 @@ def test_regular_connection_rejects_missing_attention_before_payload_or_writes(t
     path = tmp_path / "case.json"
     path.write_text(json.dumps(dict(executions=[{}, {}], provenance=dict(control_reference="unused"))))
     before = path.read_bytes()
-    with pytest.raises(ValueError, match="attention_checkpoints is missing"):
+    with pytest.raises(ValueError, match="Attention layout is missing"):
         testcase.attach_regular_control(path, tmp_path / "missing_capture.json")
     assert list(tmp_path.iterdir()) == [path] and path.read_bytes() == before
 
@@ -290,7 +290,7 @@ def test_head_cli_reports_missing_attention_mapping_before_preparation(tmp_path,
         "--output", str(destination), "--preceding-layer-testcase", str(preceding),
         "--regular-control-index", "missing-control.json", "--feature2-reference", "missing-feature2.json"])
     monkeypatch.setattr(head, "prepare", lambda *a, **k: pytest.fail("preparation started with missing Attention mapping"))
-    with pytest.raises(ValueError, match="attention_checkpoints is missing"):
+    with pytest.raises(ValueError, match="Attention layout is missing"):
         head.main()
     assert not destination.exists()
 
@@ -1396,7 +1396,7 @@ def test_qkvo_group_marks_batches_and_reserves_runtime_staging(tmp_path, monkeyp
         tmp_path / "input", monkeypatch,
         positions=(0, 1, 2, 3, 4, 5), bits=(4, 8, 4, 8, 4, 4))
     path = testcase.prepare(index, tmp_path / "grouped", round_token_limit=1,
-                      qkvo_group=True)
+                      qkvo_group=True, ffn_group_batches=0)
     cfg = read_prepared_record(path, testcase.BASE, schema("execution_config"))
     assert cfg["flags"] == 0x1003
     entry = read_prepared_record(
@@ -1416,6 +1416,143 @@ def test_qkvo_group_marks_batches_and_reserves_runtime_staging(tmp_path, monkeyp
         cursor += int.from_bytes(image[cursor + 8:cursor + 10], "little")
     assert flags == [0, 0, 0, 0, 0, 4]
 
+
+@pytest.mark.parametrize("a4,a8,batches", [(1072, 0, 6), (0, 1072, 4), (48, 40, 6)])
+def test_automatic_schedule_fits_actual_precision_capacity(a4, a8, batches):
+    metadata, _, rounds = testcase.pack_tokens([4]*a4 + [8]*a8, list(range(a4+a8)))
+    chosen = testcase.select_execution_schedule(rounds)
+    assert chosen == dict(ffn_group_batches=batches, ffn_fused_product=True,
+                          ffn_down_pair=a8 == 0, qkvo_group=True)
+    assert all(sum(r['groups'] for r in rounds[i:i+batches]) <= 18
+               for i in range(0, len(rounds), batches))
+    groups = testcase.mark_qkvo_groups(metadata, rounds)
+    assert sum(g['tokens'] for g in groups) == a4+a8
+    assert all(g['compute_groups'] <= 18 and g['batches'] <= 6 for g in groups)
+
+
+def test_qkvo_group_uses_known_a8_tail_capacity():
+    metadata, _, rounds = testcase.pack_tokens([8] * 395, list(range(395)))
+    groups = testcase.mark_qkvo_groups(metadata, rounds)
+    assert [g['batches'] for g in groups] == [4, 4, 5]
+    assert [g['compute_groups'] for g in groups] == [16, 16, 18]
+    assert [g['batches'] for g in testcase.select_qkvo_groups(rounds, online=True)] == [4, 4, 4, 1]
+    endings, cursor = [], 0
+    for index in range(len(rounds)):
+        if metadata[cursor + 3] & 4:
+            endings.append(index)
+        cursor += int.from_bytes(metadata[cursor + 8:cursor + 10], 'little')
+    assert endings == [3, 7, 12]
+
+
+def test_automatic_schedule_preserves_layout_and_explicit_requests():
+    _, _, rounds = testcase.pack_tokens([4]*97, list(range(97)))
+    selected = testcase.select_execution_schedule(rounds, selected_hidden=True)
+    assert selected['qkvo_group'] and selected['ffn_fused_product']
+    assert not selected['ffn_down_pair']
+    subset = testcase.select_execution_schedule(rounds, output_subset=True)
+    assert subset == dict(ffn_group_batches=0, ffn_fused_product=False,
+                          ffn_down_pair=False, qkvo_group=False)
+    checked = testcase.select_execution_schedule(rounds, attention_checkpoints=True)
+    assert not checked['qkvo_group'] and checked['ffn_fused_product']
+    manual = testcase.select_execution_schedule(rounds, ffn_group_batches=0, qkvo_group=False)
+    assert manual == subset
+
+
+def test_automatic_single_batch_accepts_final_output_reference(tmp_path, monkeypatch):
+    monkeypatch.setattr(testcase, 'artifact_root', lambda: tmp_path)
+    index = small_preparation_reference_data(tmp_path / 'input', monkeypatch)
+    path = unified.prepare(index, tmp_path / 'prepared')
+    case = json.loads(path.read_text())
+    assert read_prepared_record(path, testcase.BASE, schema('execution_config'))['flags'] == 3
+    assert 'attention_checkpoints' not in case
+    assert testcase.require_regular_attention(case)['token_positions'] == [5, 1, 3]
+    assert {'hidden', 'layer0.cache_key_codes', 'layer0.cache_value_codes'} <= {e['name'] for e in case['expected']}
+
+
+@pytest.mark.parametrize("options,message", [
+    (["--boundary", "--ffn-group-batches", "0"], "explicit scout/deep"),
+    (["--boundary", "--no-qkvo-group"], "explicit scout/deep"),
+    (["--boundary-deep-ffn-group-batches", "0"], "require --boundary"),
+    (["--no-boundary-scout-qkvo-group"], "require --boundary"),
+])
+def test_schedule_cli_does_not_silently_ignore_disabled_options(monkeypatch, capsys, options, message):
+    import sys
+    monkeypatch.setattr(sys, "argv", ["prepare-layer", "--index", "missing.json",
+                                      "--output", "unused", *options])
+    with pytest.raises(SystemExit) as error:
+        testcase.main()
+    assert error.value.code == 2
+    assert message in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("bits,flags", [((4, 4, 4), 0x11d3), ((8, 4, 4), 0x10d3)])
+def test_automatic_preparation_matches_explicit_configuration(tmp_path, monkeypatch, bits, flags):
+    monkeypatch.setattr(testcase, 'artifact_root', lambda: tmp_path)
+    index = small_preparation_reference_data(tmp_path / 'input', monkeypatch, bits=bits)
+    automatic = unified.prepare(index, tmp_path / 'automatic',
+        layer_options=dict(round_token_limit=1, attention_checkpoints=False))
+    explicit = unified.prepare(index, tmp_path / 'explicit', layer_options=dict(
+        round_token_limit=1, attention_checkpoints=False, ffn_group_batches=6,
+        ffn_fused_product=True, ffn_down_pair=8 not in bits, qkvo_group=True))
+    config = read_prepared_record(automatic, testcase.BASE, schema('execution_config'))
+    assert config['flags'] == flags
+    assert config['ffn_pair_first_batch_plus1'] == 1
+    a, b = json.loads(automatic.read_text()), json.loads(explicit.read_text())
+    # Compare the actual configuration, weights, metadata and all references.
+    assert (automatic.parent / a['ddr_image']).read_bytes() == (explicit.parent / b['ddr_image']).read_bytes()
+    assert a['source'] == b['source']
+    mapping = testcase.require_regular_attention(a)
+    assert mapping['token_positions'] == [5, 1, 3]
+    assert sorted(token for batch in mapping['physical_to_reference_token'] for token in batch) == [0, 1, 2]
+    assert {e['name']: (automatic.parent / e['path']).read_bytes() for e in a['expected']} == {
+        e['name']: (explicit.parent / e['path']).read_bytes() for e in b['expected']}
+
+
+
+@pytest.mark.parametrize("tier,direct", [
+    ("baseline", False), ("baseline", True),
+    ("feature1", False), ("feature12", False), ("feature123", False),
+])
+def test_capture_tier_selects_execution_schedule(tmp_path, monkeypatch, tier, direct):
+    monkeypatch.setattr(testcase, "artifact_root", lambda: tmp_path)
+    index = small_preparation_reference_data(tmp_path / "input", monkeypatch,
+        positions=tuple(range(6)), bits=(8,) * 6)
+    metadata = json.loads(index.read_text())
+    metadata["generation_config"] = dict(full_sequence_recompute=tier == "baseline",
+        dynamic_block_lookahead=tier == "feature123")
+    index.write_text(json.dumps(metadata))
+    options = dict(round_token_limit=1, attention_checkpoints=False)
+    path = (testcase.prepare(index, tmp_path / "prepared", **options) if direct else
+            unified.prepare(index, tmp_path / "prepared", layer_options=options))
+    config = read_prepared_record(path, testcase.BASE, schema("execution_config"))
+    baseline = tier == "baseline"
+    assert config["flags"] == (3 if baseline else 0x10d3)
+    assert config["ffn_pair_first_batch_plus1"] == (0 if baseline else 1)
+    case = json.loads(path.read_text())
+    assert bool(case["source"].get("reuse")) == (not baseline)
+    memory = json.loads((path.parent / case["memory_map"]).read_text())
+    image = (path.parent / case["ddr_image"]).read_bytes()
+    cursor = config["token_metadata_base"] - memory["base_address"]
+    group_endings = []
+    for batch in range(6):
+        if image[cursor + 3] & 4:
+            group_endings.append(batch)
+        cursor += int.from_bytes(image[cursor + 8:cursor + 10], "little")
+    assert group_endings == ([] if baseline else [5])
+    assert {"hidden", "layer0.cache_key_codes", "layer0.cache_value_codes"} <= {
+        entry["name"] for entry in case["expected"]}
+
+
+@pytest.mark.parametrize("option,value", [
+    ("ffn_group_batches", 4), ("ffn_fused_product", True), ("ffn_down_pair", True),
+    ("qkvo_group", True), ("attention_pair", True), ("kv_pair", True),
+    ("attention_output_pair", True),
+])
+def test_baseline_rejects_enabled_schedule_options(option, value):
+    from types import SimpleNamespace
+    reference = SimpleNamespace(metadata=dict(generation_config=dict(full_sequence_recompute=True)))
+    with pytest.raises(ValueError, match="baseline execution"):
+        testcase.prepare(None, None, reference_data=reference, **{option: value})
 
 def test_qkvo_group_splits_six_batches_plus_single_tail():
     metadata, _, rounds = testcase.pack_tokens(
@@ -1562,6 +1699,8 @@ def test_final_layer_checkpoints_preserve_input_for_l31_layout(tmp_path, monkeyp
     names = {entry["name"] for entry in checks["expected"]}
     assert config["start_layer"] == 32 - layers
     assert config["layer_count"] == layers
+    assert bool(config["flags"] & (1 << 12)) == (layers == 2 and subset)
+    assert bool(config["flags"] & (1 << 13)) == (layers == 2 and subset)
     assert checks["layer"] == 31
     assert ("preserved_hidden" in names) == (layers == 1 or subset)
     assert {"probability_codes", "probability_scale", "attention_residual"} <= names
@@ -1626,6 +1765,7 @@ def test_l31_actual_output_connects_to_head_without_expected_input(tmp_path, mon
     case = json.loads(path.read_text())
     assert case["executions"][0] == layer_case["executions"][0]
     assert case["head_checkpoints"]["execution_index"] == 1
+    assert testcase.require_regular_attention(case) == testcase.require_regular_attention(layer_case)
     image = (path.parent / case["ddr_image"]).read_bytes()
     cfg = decode_record(image, schema("execution_config"))
     assert cfg["output_hidden_base"] == layer_hidden["address"]

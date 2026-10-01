@@ -1,7 +1,10 @@
 #include "tb/testcase_handoff_actions.hpp"
 #include <iostream>
 
-static void require(bool ok) { if (!ok) throw std::runtime_error("handoff self-test failed"); }
+static void require_at(bool ok, unsigned line) {
+    if (!ok) throw std::runtime_error("handoff self-test failed at line " + std::to_string(line));
+}
+#define require(condition) require_at((condition), __LINE__)
 
 int main() {
     std::vector<forward_postprocess_next_token_descriptor> boundary_rows(395);
@@ -13,6 +16,13 @@ int main() {
     require(testcase_handoff::metadata(boundary_rows, 395, 0).size() == 7136);
     for (unsigned p = 220; p < 235; ++p) boundary_rows[p].activation_bits = 4;
     require(testcase_handoff::metadata(boundary_rows, 395, 0).size() == 7168);
+    const auto mark_last_batch = [](std::vector<std::uint8_t>& data) {
+        for (unsigned offset = 0; offset < data.size();) {
+            const unsigned bytes = unsigned(data[offset+8]) | unsigned(data[offset+9]) << 8;
+            if (offset + bytes == data.size()) data[offset+3] |= 4;
+            offset += bytes;
+        }
+    };
     std::map<std::uint64_t, std::uint8_t> memory;
     const auto read = [&](std::uint64_t address) { return int(memory[address]); };
     const auto write = [&](std::uint64_t address, std::uint8_t value) { memory[address] = value; return 0; };
@@ -184,6 +194,8 @@ int main() {
         const unsigned wanted = token.position>=32 && token.position<64 ? 400+token.position-32 : 100+token.position;
         require(token.bits==8 && get(token.address,4)==wanted && get(table+token.position*4,4)==wanted);
         require(get(token.address+9,1)==FORWARD_POSTPROCESS_EMBEDDING_TOKEN);
+        const auto header = token.address - 32 - token.physical * 16;
+        require((get(header+3,1)&4u)==0);
     }
     require(get(predictions+8,4)==401 && get(predictions+20,2)==33);
     // Same block, later actual update. Only the new live token may change.
@@ -247,7 +259,8 @@ int main() {
         completed[row].activation_bits=4;
     }
     const auto completed_bytes=testcase_handoff::metadata(completed,sequence,10);
-    const auto whole_bytes=testcase_handoff::metadata(whole,sequence,11);
+    auto whole_bytes=testcase_handoff::metadata(whole,sequence,11);
+    mark_last_batch(whole_bytes);
     for (unsigned b=0;b<completed_bytes.size();++b) memory[completed_meta+b]=completed_bytes[b];
     for (unsigned b=0;b<whole_bytes.size();++b) memory[boundary_layout+b]=whole_bytes[b];
     set(config+EXECUTION_CONFIG_TOKEN_METADATA_BASE_OFFSET,8,boundary_layout);
@@ -264,8 +277,15 @@ int main() {
         {"probability_address",0x20000},{"probability_limit",0x200000},
         {"jobs_address",0x200000},{"jobs_capacity",4096},
         {"probability_config_address",config+496},{"refresh_address",config+320}};
+    set(config+EXECUTION_CONFIG_FLAGS_OFFSET,4,1u<<12);
     const auto initial_boundary=memory;
     result=testcase_handoff_actions(nlohmann::json{{"handoff_actions",{action}}},read,write);
+    unsigned grouped_header=boundary_layout;
+    for (unsigned i=0; i<sequence;) {
+        i+=get(grouped_header,1);
+        require(bool(get(grouped_header+3,1)&4u)==(i==sequence));
+        grouped_header+=get(grouped_header+8,2);
+    }
     require(result[0]["transition_mask"]==((1u<<2)|(1u<<7)|(1u<<9)));
     require(get(history,2)==current && get(history+8,4)==0 && get(history+4,4)==11);
     require(get(table+5*8,8)>>35==9005 && get(table+36*8,8)>>35==50036);

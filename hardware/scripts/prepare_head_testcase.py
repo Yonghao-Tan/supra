@@ -623,6 +623,8 @@ def connect_preceding_layer(case, output, layer_path, tokens):
                             item for item in case["expected"] if item["name"] != "hidden_input"]
     case["executions"] = executions + case["executions"]
     case["head_checkpoints"]["execution_index"] = len(executions)
+    if "attention_layout" in layer:
+        case["attention_layout"] = layer["attention_layout"]
     if "attention_checkpoints" in layer:
         checks = layer["attention_checkpoints"]
         multiple = isinstance(checks, list)

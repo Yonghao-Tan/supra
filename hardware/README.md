@@ -230,6 +230,9 @@ external memory interface, PLL, and system control, is excluded from this releas
 Implementation-specific optimizations, such as clock gating, are also excluded
 from this release.
 
+The preparation tools configure execution scheduling and memory layout for the
+released accelerator core.
+
 - N8 PE: M8 x N8, W4A4/W4A8 and INT8 Attention operations, with INT32 dot accumulation.
 - Transformer weights are W4; the head uses W8A8. Dynamic A4/A8, BF16 scales, R4 and configured A4 clipping are implemented.
 - SRAM: 26 macros, 640 KiB, 128-bit words. The portable model preserves dual-port, byte-mask and synchronous-read behavior.

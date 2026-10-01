@@ -195,17 +195,37 @@ def select_ffn_group_batches(rounds, requested=None):
     raise ValueError('FFN grouping exceeds the 18-compute-group activation capacity; use 4 batches')
 
 
-def mark_qkvo_groups(metadata, rounds, max_batches=6, max_compute_groups=18, *, online=False):
-    """Mark contiguous metadata groups accepted by the production Q/K/V/O path."""
+def select_execution_schedule(rounds, *, selected_hidden=False, output_subset=False,
+                              attention_checkpoints=False, attention_pair=False,
+                              kv_pair=False, attention_output_pair=False,
+                              ffn_group_batches=None, ffn_fused_product=None,
+                              ffn_down_pair=None, qkvo_group=None):
+    """Select supported reuse for the actual metadata and input layout.
+
+    Grouped projections share weights across batches. Selected hidden rows
+    cannot use Down pairing; a standalone output subset uses separate sweeps.
+    Explicit settings retain their meaning and are checked by preparation.
+    """
+    multiple = len(rounds) > 1 and not output_subset
+    if ffn_group_batches is None:
+        ffn_group_batches = select_ffn_group_batches(rounds) if multiple else 0
+    if ffn_fused_product is None:
+        ffn_fused_product = bool(ffn_group_batches)
+    if ffn_down_pair is None:
+        ffn_down_pair = (bool(ffn_group_batches) and ffn_fused_product and
+                         not selected_hidden and all(r['a8'] == 0 for r in rounds))
+    if qkvo_group is None:
+        qkvo_group = (multiple and not attention_checkpoints and
+                     not (attention_pair or kv_pair or attention_output_pair))
+    return dict(ffn_group_batches=ffn_group_batches,
+                ffn_fused_product=ffn_fused_product,
+                ffn_down_pair=ffn_down_pair, qkvo_group=qkvo_group)
+
+
+def select_qkvo_groups(rounds, max_batches=6, max_compute_groups=18, *, online=False):
+    """Fit contiguous projection batches into the activation SRAM."""
     if not rounds:
         raise ValueError("Q/K/V/O grouping requires nonempty metadata")
-    offsets, cursor = [], 0
-    for summary in rounds:
-        offsets.append(cursor)
-        cursor += struct.unpack_from("<H", metadata, cursor + 8)[0]
-    if cursor != len(metadata):
-        raise ValueError("token metadata records do not cover the packed payload")
-
     groups, first, batches, compute_groups = [], 0, 0, 0
     remaining_a8 = sum(int(r["a8"]) for r in rounds)
     tokens, slots = 0, 0
@@ -213,7 +233,6 @@ def mark_qkvo_groups(metadata, rounds, max_batches=6, max_compute_groups=18, *, 
         next_compute_groups = int(summary["groups"])
         if batches and (batches == max_batches or
                         compute_groups + next_compute_groups > max_compute_groups):
-            metadata[offsets[index - 1] + 3] |= 0x04
             groups.append(dict(first_round=first, batches=batches,
                                tokens=tokens, activation_slots=slots,
                                compute_groups=compute_groups))
@@ -226,12 +245,10 @@ def mark_qkvo_groups(metadata, rounds, max_batches=6, max_compute_groups=18, *, 
         remaining_a8 -= int(summary["a8"])
         if online and index + 1 < len(rounds) and (
                 batches == max_batches or compute_groups + (5 if remaining_a8 else 3) > max_compute_groups):
-            metadata[offsets[index] + 3] |= 0x04
             groups.append(dict(first_round=first, batches=batches, tokens=tokens,
                                activation_slots=slots, compute_groups=compute_groups))
             first, batches, compute_groups = index + 1, 0, 0
             tokens, slots = 0, 0
-    metadata[offsets[-1] + 3] |= 0x04
     groups.append(dict(first_round=first, batches=batches, tokens=tokens,
                        activation_slots=slots,
                        compute_groups=compute_groups))
@@ -239,6 +256,20 @@ def mark_qkvo_groups(metadata, rounds, max_batches=6, max_compute_groups=18, *, 
            group["compute_groups"] > max_compute_groups or
            group["activation_slots"] > 288 for group in groups):
         raise ValueError("Q/K/V/O metadata group exceeds hardware capacity")
+    return groups
+
+
+def mark_qkvo_groups(metadata, rounds, max_batches=6, max_compute_groups=18, *, online=False):
+    """Write group endings into the metadata consumed by Q/K/V/O execution."""
+    groups = select_qkvo_groups(rounds, max_batches, max_compute_groups, online=online)
+    offsets, cursor = [], 0
+    for summary in rounds:
+        offsets.append(cursor)
+        cursor += struct.unpack_from("<H", metadata, cursor + 8)[0]
+    if cursor != len(metadata):
+        raise ValueError("token metadata records do not cover the packed payload")
+    for group in groups:
+        metadata[offsets[group["first_round"] + group["batches"] - 1] + 3] |= 0x04
     return groups
 
 
@@ -282,9 +313,8 @@ def last_layer_output_token_indices(metadata, positions):
     return {position_to_row[position] for position in consumers}
 
 
-def prepare_attention_checkpoints(reference_data, output, metadata, order, tokens, sequence, layer,
-                                  *, preserve_input=False):
-    """Pack captured Attention tensors and their token map."""
+def attention_token_maps(metadata, order, tokens):
+    """Map physical metadata rows and output subsets to captured token rows."""
     token_map, residual_map, cursor, first = [], [], 0, 0
     while cursor < len(metadata):
         count = metadata[cursor]
@@ -298,6 +328,13 @@ def prepare_attention_checkpoints(reference_data, output, metadata, order, token
         cursor += struct.unpack_from("<H", metadata, cursor + 8)[0]
     if first != tokens or cursor != len(metadata):
         raise ValueError("Attention checkpoint metadata does not cover all tokens")
+    return token_map, residual_map
+
+
+def prepare_attention_checkpoints(reference_data, output, metadata, order, tokens, sequence, layer,
+                                  *, preserve_input=False):
+    """Pack captured Attention tensors and their token map."""
+    token_map, residual_map = attention_token_maps(metadata, order, tokens)
     prefix = layer_prefix(reference_data, 0, 1)
     expected = []
     query_keys = [("expected", prefix + name) for name in ("query_codes", "query_scale")]
@@ -754,9 +791,9 @@ def boundary_views(index, payload_root=None, last_layer=1):
 
 def prepare_boundary(index, output, payload_root=None, ddr_config=None,
                      attention_checkpoints=False, *,
-                     scout_ffn_group_batches=0, scout_ffn_fused_product=False,
-                     deep_ffn_group_batches=0, deep_ffn_fused_product=False,
-                     scout_qkvo_group=False, deep_qkvo_group=False,
+                     scout_ffn_group_batches=None, scout_ffn_fused_product=None,
+                     deep_ffn_group_batches=None, deep_ffn_fused_product=None,
+                     scout_qkvo_group=None, deep_qkvo_group=None,
                      block_initialization_reference=None, boundary_reference=None,
                      deep_round_token_limit=48, last_layer=1, base_address=BASE):
     if last_layer == 0:
@@ -845,7 +882,7 @@ def prepare_boundary(index, output, payload_root=None, ddr_config=None,
     deep_path = prepare(index, output / "deep", ddr_config=ddr_config, reference_data=views[1],
                         base_address=align(max(r["limit"] for r in first_regions["memory_map"]), 256),
                         hidden_region=(arena_base, arena_limit),
-                        attention_checkpoints=attention_checkpoints and not deep_qkvo_group,
+                        attention_checkpoints=False if deep_qkvo_group else attention_checkpoints,
                         source_indices=indices, round_token_limit=deep_round_token_limit,
                         ffn_group_batches=deep_ffn_group_batches,
                         ffn_fused_product=deep_ffn_fused_product, qkvo_group=deep_qkvo_group)
@@ -877,16 +914,20 @@ def prepare_boundary(index, output, payload_root=None, ddr_config=None,
                     source_token_indices=source_token_indices, deep_source_indices=indices,
                     scout=first["source"], deep=deep["source"],
                     hidden_connection="in-place DDR read of actual L0 output; existing RTL K/V sweep preserves multi-round input"))
-    if attention_checkpoints:
-        checks = dict(first["attention_checkpoints"], execution_index=0)
-        checks["expected"] = [dict(entry, path="scout/" + entry["path"])
-                              for entry in checks["expected"]]
-        case["attention_checkpoints"] = [checks]
-        if "attention_checkpoints" in deep:
-            deep_checks = dict(deep["attention_checkpoints"], execution_index=1)
-            deep_checks["expected"] = [dict(entry, path="deep/" + entry["path"])
-                                       for entry in deep_checks["expected"]]
-            case["attention_checkpoints"].append(deep_checks)
+    case.pop("attention_layout", None)
+    if "attention_layout" in deep:
+        case["attention_layout"] = deep["attention_layout"]
+    checks = []
+    for execution, (directory, stage) in enumerate((("scout", first), ("deep", deep))):
+        if "attention_checkpoints" in stage:
+            check = dict(stage["attention_checkpoints"], execution_index=execution)
+            check["expected"] = [dict(entry, path=directory + "/" + entry["path"])
+                                 for entry in check["expected"]]
+            checks.append(check)
+    if checks:
+        case["attention_checkpoints"] = checks
+    else:
+        case.pop("attention_checkpoints", None)
     if selection_data is not None:
         attach_boundary_selection(case, output, selection_data, first, deep, regions,
                                    n0, n1, capture_index=json.loads(Path(index).read_text()).get("forward", {}).get("capture_index", 1))
@@ -1100,7 +1141,7 @@ def attach_boundary_selection(case, output, reference, scout, deep, regions,
             rounds.append(dict(tokens=count, a4=count-a8, a8=a8, groups=raw[cursor+1]))
             raw[cursor+3] &= ~4
             cursor += struct.unpack_from("<H", raw, cursor+8)[0]
-        case["source"]["deep"]["reuse"]["qkvo_groups"] = mark_qkvo_groups(raw, rounds, online=True)
+        mark_qkvo_groups(raw, rounds, online=True)
     raw = bytearray(raw)
     cursor = 0
     while cursor < len(raw):
@@ -1115,11 +1156,11 @@ def attach_boundary_selection(case, output, reference, scout, deep, regions,
 
 
 def require_regular_attention(case):
-    mapping = case.get("attention_checkpoints", {})
+    mapping = case.get("attention_layout", case.get("attention_checkpoints", {}))
     if isinstance(mapping, list):
         mapping = max(mapping, key=lambda check: check.get("execution_index", 0)) if mapping else {}
     if not mapping.get("physical_to_reference_token") or not mapping.get("token_positions"):
-        raise ValueError("attention_checkpoints is missing a nonempty "
+        raise ValueError("Attention layout is missing a nonempty "
                          "physical_to_reference_token or token_positions mapping")
     return mapping
 
@@ -1617,11 +1658,17 @@ def attach_regular_control(case_path, control_index, *, payload_root=None):
 def prepare(index, output, payload_root=None, ddr_config=None, *, reference_data=None,
             base_address=BASE, hidden_region=None, source_indices=None,
             last_layer_output_subset=False, round_token_limit=48, attention_checkpoints=False,
-            ffn_group_batches=0, ffn_fused_product=False, ffn_down_pair=False,
+            ffn_group_batches=None, ffn_fused_product=None, ffn_down_pair=None,
             attention_output_pair=False, attention_pair=False, kv_pair=False,
-            qkvo_group=False):
+            qkvo_group=None):
     reference_data = reference_data or ReferenceData(index, payload_root)
     info = reference_data.metadata
+    if (info.get("generation_config") or {}).get("full_sequence_recompute", False):
+        if any((ffn_group_batches, ffn_fused_product, ffn_down_pair,
+                attention_output_pair, attention_pair, kv_pair, qkvo_group)):
+            raise ValueError("baseline execution requires ungrouped, unfused scheduling")
+        ffn_group_batches = 0
+        ffn_fused_product = ffn_down_pair = qkvo_group = False
     layers = info.get("layer_count", info.get("layers", 1))
     first_layer = info.get("model_layer_index", 0)
     if type(layers) is not int or not 1 <= layers <= 32 or type(first_layer) is not int or not 0 <= first_layer < 32 or first_layer + layers > 32:
@@ -1685,13 +1732,32 @@ def prepare(index, output, payload_root=None, ddr_config=None, *, reference_data
                 raise ValueError(f"unsupported per-layer {key}")
     output_token_indices = last_layer_output_token_indices(info, positions) if last_layer_output_subset else None
     effective_output_subset = output_token_indices is not None and len(output_token_indices) < tokens
-    if attention_checkpoints and (attention_pair or qkvo_group):
+    separate_l31_metadata = effective_output_subset and layers > 1
+    metadata, order, rounds = pack_tokens(bits, positions, set(write_token_indices), source_indices,
+                                       output_token_indices if effective_output_subset and not separate_l31_metadata else None,
+                                       round_token_limit=round_token_limit)
+    schedule = select_execution_schedule(rounds,
+        selected_hidden=hidden_region is not None or source_indices is not None,
+        output_subset=effective_output_subset and not separate_l31_metadata,
+        attention_checkpoints=attention_checkpoints and not separate_l31_metadata,
+        attention_pair=attention_pair, kv_pair=kv_pair, attention_output_pair=attention_output_pair,
+        ffn_group_batches=ffn_group_batches, ffn_fused_product=ffn_fused_product,
+        ffn_down_pair=ffn_down_pair, qkvo_group=qkvo_group)
+    ffn_group_batches = schedule['ffn_group_batches']
+    ffn_fused_product = schedule['ffn_fused_product']
+    ffn_down_pair = schedule['ffn_down_pair']
+    qkvo_group = schedule['qkvo_group']
+    if attention_checkpoints is None:
+        prefix = layer_prefix(reference_data, layers - 1, layers)
+        attention_checkpoints = (separate_l31_metadata or not (attention_pair or qkvo_group)) and all(
+            ("expected", prefix + name) in reference_data.entries
+            for name in ("probability_codes", "probability_scale"))
+    if attention_checkpoints and not separate_l31_metadata and (attention_pair or qkvo_group):
         raise ValueError("Attention checkpoints require a layer without Attention grouping")
     if type(ffn_group_batches) is not int or ffn_group_batches not in (0, 4, 6):
         raise ValueError("ffn_group_batches must be 0, 4 or 6")
     reuse = bool(ffn_group_batches or ffn_fused_product or ffn_down_pair or
                  attention_output_pair or attention_pair or kv_pair or qkvo_group)
-    separate_l31_metadata = effective_output_subset and layers > 1
     if reuse and effective_output_subset and not separate_l31_metadata:
         raise ValueError("reuse cannot be combined with output subset")
     if (hidden_region is not None or source_indices is not None) and (
@@ -1706,9 +1772,6 @@ def prepare(index, output, payload_root=None, ddr_config=None, *, reference_data
         raise ValueError("fused product requires FFN grouping")
     if ffn_down_pair and not ffn_fused_product:
         raise ValueError("Down pairing requires fused product")
-    metadata, order, rounds = pack_tokens(bits, positions, set(write_token_indices), source_indices,
-                                       output_token_indices if effective_output_subset and not separate_l31_metadata else None,
-                                       round_token_limit=round_token_limit)
     input_order = order
     l31_metadata, l31_rounds = None, None
     if separate_l31_metadata:
@@ -1992,6 +2055,10 @@ def prepare(index, output, payload_root=None, ddr_config=None, *, reference_data
             checkpoint_reference, output, l31_metadata if separate_l31_metadata else metadata,
             order, tokens, sequence, final_layer,
             preserve_input=separate_l31_metadata or (layers == 1 and (len(rounds) > 1 or effective_output_subset)))
+    else:
+        token_map, _ = attention_token_maps(l31_metadata if separate_l31_metadata else metadata, order, tokens)
+        case["attention_layout"] = dict(token_positions=positions.tolist(),
+                                        physical_to_reference_token=token_map)
     (output / "case.json").write_text(json.dumps(case, indent=2) + "\n")
     return output / "case.json"
 
@@ -2013,23 +2080,23 @@ def main():
                         help="captured block initialization reference for RTL deep-row selection")
     parser.add_argument("--boundary-reference", type=Path,
                         help="independent ordinary-boundary reference; live L0 scores drive RTL selection")
-    parser.add_argument("--boundary-scout-ffn-group-batches", type=int, choices=(0, 4, 6), default=0)
-    parser.add_argument("--boundary-scout-ffn-fused-product", action="store_true")
-    parser.add_argument("--boundary-deep-ffn-group-batches", type=int, choices=(0, 4, 6), default=0)
-    parser.add_argument("--boundary-deep-ffn-fused-product", action="store_true")
-    parser.add_argument("--boundary-scout-qkvo-group", action="store_true")
-    parser.add_argument("--boundary-deep-qkvo-group", action="store_true")
+    parser.add_argument("--boundary-scout-ffn-group-batches", type=int, choices=(0, 4, 6), default=None)
+    parser.add_argument("--boundary-scout-ffn-fused-product", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--boundary-deep-ffn-group-batches", type=int, choices=(0, 4, 6), default=None)
+    parser.add_argument("--boundary-deep-ffn-fused-product", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--boundary-scout-qkvo-group", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--boundary-deep-qkvo-group", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--last-layer-output-subset", action="store_true",
                         help="select L31 outputs for recorded current/future predictions and retained hidden consumers")
     parser.add_argument("--round-token-limit", type=int, default=48)
-    parser.add_argument("--ffn-group-batches", type=int, choices=(0, 4, 6), default=0,
-                        help="mixed or all-A4 Gate/Up reuse in successive groups; 0 preserves the original schedule")
-    parser.add_argument("--ffn-fused-product", action="store_true")
-    parser.add_argument("--ffn-down-pair", action="store_true")
+    parser.add_argument("--ffn-group-batches", type=int, choices=(0, 4, 6), default=None,
+                        help="Gate/Up batch group size; selected automatically when omitted, 0 disables FFN grouping")
+    parser.add_argument("--ffn-fused-product", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--ffn-down-pair", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--attention-output-pair", action="store_true")
     parser.add_argument("--attention-pair", action="store_true")
     parser.add_argument("--kv-pair", action="store_true")
-    parser.add_argument("--qkvo-group", action="store_true",
+    parser.add_argument("--qkvo-group", action=argparse.BooleanOptionalAction, default=None,
                         help="group two to six metadata batches for Q/K/V/O weight reuse")
     parser.add_argument("--attention-checkpoints", action="store_true",
                         help="compare preserved hidden, Query codes/scales, QK scores, BF16 softmax and final P8 codes/scales from existing RTL observations")
@@ -2040,13 +2107,15 @@ def main():
         parser.error("--layer and --boundary are mutually exclusive")
     if args.boundary and args.last_layer_output_subset:
         parser.error("boundary scout/deep cannot use last-layer output subset")
-    if args.boundary and (args.base_address != BASE or args.round_token_limit != 48 or args.ffn_group_batches or
-            args.ffn_fused_product or args.ffn_down_pair or args.attention_output_pair or
-            args.attention_pair or args.kv_pair or args.qkvo_group):
+    if args.boundary and (args.base_address != BASE or args.round_token_limit != 48 or
+            any(value is not None for value in (args.ffn_group_batches, args.ffn_fused_product,
+                                                args.ffn_down_pair, args.qkvo_group)) or
+            args.attention_output_pair or args.attention_pair or args.kv_pair):
         parser.error("boundary FFN options must use the explicit scout/deep arguments")
-    if not args.boundary and (args.boundary_scout_ffn_group_batches or
-            args.boundary_scout_ffn_fused_product or args.boundary_deep_ffn_group_batches or
-            args.boundary_deep_ffn_fused_product or args.boundary_scout_qkvo_group or args.boundary_deep_qkvo_group):
+    if not args.boundary and any(value is not None for value in (
+            args.boundary_scout_ffn_group_batches, args.boundary_scout_ffn_fused_product,
+            args.boundary_deep_ffn_group_batches, args.boundary_deep_ffn_fused_product,
+            args.boundary_scout_qkvo_group, args.boundary_deep_qkvo_group)):
         parser.error("boundary scout/deep FFN options require --boundary")
     if args.boundary:
         print(prepare_boundary(args.index, args.output, args.payload_root, args.ddr_config,

@@ -100,7 +100,6 @@ For `cache_initialization`, prepare the captured initial layer:
 ```bash
 CASE=$(python3 -B integration/prepare_testcase.py \
   --index "$SUPRA_ALGORITHM_ROOT/$EXAMPLE/index-cache_initialization-layers.json" \
-  --layer-options integration/examples/cache_initialization_options.json \
   --output "$SUPRA_ARTIFACT_ROOT/prepared/$EXAMPLE")
 ```
 
@@ -110,7 +109,6 @@ the scout and selected deep rows:
 ```bash
 CASE=$(python3 -B integration/prepare_testcase.py \
   --index "$SUPRA_ALGORITHM_ROOT/$EXAMPLE/index-block_initialization-layers.json" \
-  --layer-options integration/examples/block_initialization_options.json \
   --output "$SUPRA_ARTIFACT_ROOT/prepared/$EXAMPLE")
 ```
 
@@ -121,7 +119,7 @@ python3 -B hardware/scripts/run_testcase.py \
   --case "$CASE" --run-id "$EXAMPLE" --threads 8 --jobs 8
 ```
 
-Scheduling options are kept in the two JSON files. See
+Execution settings are selected automatically during preparation. See
 [Data Size and Simulation Time](#data-size-and-simulation-time) when choosing
 an example and allocating resources.
 
@@ -183,11 +181,15 @@ without a deep-layer launch.
 Algorithm decisions come from the captured request and control events. Preparation
 options select memory layout, DDR timing and scheduling. `--ddr 2400` or `3200`
 selects the bundled LPDDR4 model; 3200 is the default. `--layer-options FILE`
-supplies a JSON object of explicit preparation keywords. For per-step options,
+supplies a JSON object that overrides individual preparation settings. Automatic
+scheduling uses the input precision, batch capacity and memory layout to select
+data reuse. The resulting settings are recorded in the generated case. For per-step options,
 `--steps` also accepts a list with `index`, optional `head_index`, optional
 `layer_range` and optional `layer_options` in each entry. Index paths resolve
-relative to that steps file. Regular mode enables L31 output selection and
-Attention checkpoints automatically; keep Attention grouping disabled for it.
+relative to that steps file. Regular mode enables L31 output selection.
+Available Attention intermediate checks are included where compatible with the
+selected schedule; `--attention-checkpoints` explicitly requests them and selects a
+compatible schedule. Final output, cache and control comparisons remain enabled.
 
 Layer preparation uses D4096/F12288/H32, sequence lengths up to 2048, G-1 W4
 weights and captured A4/A8 rows. A consecutive range shares query positions,

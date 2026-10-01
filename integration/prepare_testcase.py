@@ -304,7 +304,7 @@ def prepare(index, output, *, mode="layer", head_index=None, payload_root=None,
     options = dict(layer_options or {})
     for key, explicit, default in (("base_address", base_address, layers.BASE),
             ("last_layer_output_subset", output_subset, False),
-            ("attention_checkpoints", attention_checkpoints, False)):
+            ("attention_checkpoints", attention_checkpoints, None)):
         value = options.pop(key, default)
         if explicit is not None:
             value = explicit
@@ -363,7 +363,8 @@ def prepare(index, output, *, mode="layer", head_index=None, payload_root=None,
     output.mkdir(parents=True)
     control = output / "control_reference.json"
     control.write_text(json.dumps(observed, indent=2) + "\n")
-    layer_case = prepare_layers(output / "layers", base_address if explicit_base else 0x60000000, True, True)
+    layer_case = prepare_layers(output / "layers", base_address if explicit_base else 0x60000000,
+                                attention_checkpoints, True)
     rows = head_output_rows(layer_case, index, head_index, payload_root)
     case = head.prepare(head_index, output / "execution", payload_root, ddr=ddr,
         preceding_layer_testcase=layer_case, layer_output_tokens=rows, feature2_reference=control,
@@ -422,7 +423,7 @@ def prepare_steps(selections, output, *, payload_root=None, ddr=3200):
         case = prepare(selection["index"],output/f"step{number}",mode="regular" if with_head else "layer",
             head_index=selection.get("head_index"),payload_root=payload_root,ddr=ddr,
             base_address=base+0x50000000 if with_head else base,head_base_address=base if with_head else head.BASE,
-            attention_checkpoints=True,layer_options=selection.get("layer_options"),
+            layer_options=selection.get("layer_options"),
             layer_range=selection.get("layer_range"))
         if result is None:
             result = case
@@ -447,13 +448,13 @@ def main():
     parser.add_argument("--base-address", type=lambda value: int(value, 0))
     parser.add_argument("--head-base-address", type=lambda value: int(value, 0), default=head.BASE)
     parser.add_argument("--output-subset", action="store_true", default=None)
-    parser.add_argument("--attention-checkpoints", action="store_true", default=None)
+    parser.add_argument("--attention-checkpoints", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--layer-range", type=int, nargs=2, metavar=("FIRST", "LAST"))
     parser.add_argument("--layer-options", type=Path, help="JSON of explicit prepare-layer scheduling arguments")
     args = parser.parse_args()
     if args.steps:
         if (args.head_index or args.base_address is not None or args.layer_options or args.layer_range or args.mode != "layer"
-                or args.output_subset or args.attention_checkpoints or args.head_base_address != head.BASE):
+                or args.output_subset or args.attention_checkpoints is not None or args.head_base_address != head.BASE):
             parser.error("--steps carries per-step inputs; do not combine it with single-step options")
         selections = captured_steps(json.loads(args.steps.read_text()))
         for selection in selections:
