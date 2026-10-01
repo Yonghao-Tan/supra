@@ -179,7 +179,6 @@ def deployment_fields(config: dict, tier: str = "feature123", *, block_step_inde
     supplied = config.get("model_args", config)
     release = Path(__file__).resolve().parents[2]
     algorithm = release / "algorithm/llada"
-    defaults = json.loads((algorithm / "configs/gsm8k.json").read_text())["model_args"]
     model = ast.parse((algorithm / "evaluation/model.py").read_text())
     evaluator = next(node for node in model.body if isinstance(node, ast.ClassDef)
                      and node.name == "QuantizedLLaDALM")
@@ -189,7 +188,13 @@ def deployment_fields(config: dict, tier: str = "feature123", *, block_step_inde
     unknown = set(supplied) - known
     if unknown:
         raise ValueError(f"unknown model_args fields: {sorted(unknown)}")
-    args = {"cross_block_boundary_context_row_bits": 8, **defaults, **supplied}
+    default_nodes = list(zip(constructor.args.args[-len(constructor.args.defaults):],
+                             constructor.args.defaults))
+    default_nodes.extend((arg, value) for arg, value in
+                         zip(constructor.args.kwonlyargs, constructor.args.kw_defaults)
+                         if value is not None)
+    defaults = {arg.arg: ast.literal_eval(value) for arg, value in default_nodes}
+    args = {**defaults, **supplied}
     mode = args["generation_mode"]
     fixed_decoding = mode in ("baseline_fixed_k", "feature1_fixed_k")
     if mode not in ("feature1_packed_feature2_fused_dynamic_block", "feature1_packed_feature2_fused_a4a8", "feature1_fixed_k", "baseline_fixed_k"):
@@ -275,8 +280,8 @@ def deployment_fields(config: dict, tier: str = "feature123", *, block_step_inde
     floor, deep_clip = float(block_initialization["relative_score_floor"]), float(block_initialization["deep_clip_ratio"])
     if args["feature2_cache_initialization_activation_policy"] not in ("default", "a4"):
         raise ValueError("cache initialization activation policy must be default or a4")
-    if block_initialization["global_layers"] != 1 or (deep_tokens and (not 256 <= deep_tokens <= 432 or deep_tokens % 8)):
-        raise ValueError("block initialization supports one full L0 and deep256..432 step8, or full sequence")
+    if block_initialization["global_layers"] != 1 or (deep_tokens and (not 32 <= deep_tokens <= 432)):
+        raise ValueError("block initialization requires one full L0 and 32..432 deep rows, or zero for full sequence")
     if not 0 <= floor <= .25 or (floor and not block_initialization["dependency_only"]):
         raise ValueError("block initialization floor must be0..0.25 and requires dependency-only")
     if block_initialization["dependency_only"] and not block_initialization["dependency_tiebreak"]:

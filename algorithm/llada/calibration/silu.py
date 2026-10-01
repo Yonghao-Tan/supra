@@ -21,6 +21,13 @@ def statistics_shards(root):
     return sorted(members[0])
 
 
+def sampling_schedule(observation):
+    schedule = observation.get("sampling")
+    if schedule != SILU_SAMPLING:
+        raise ValueError("SiLU fitting requires shard call-counter sampling")
+    return schedule
+
+
 def load_statistics(root):
     paths = [shard / "silu_histograms.pt" for shard in statistics_shards(root)]
     counts = torch.zeros(65536, dtype=torch.int64)
@@ -28,8 +35,7 @@ def load_statistics(root):
     by_layer = {}
     for path in paths:
         observation = json.loads((path.parent / "silu_errors.json").read_text())
-        if observation.get("sampling") != SILU_SAMPLING:
-            raise ValueError("SiLU fitting requires channel-safe sampling")
+        sampling_schedule(observation)
         records = torch.load(path, map_location="cpu", weights_only=True)
         if set(records) != set(range(32)):
             raise ValueError("SiLU distributions must cover all 32 layers")
@@ -210,11 +216,11 @@ def main():
         ]
         for shard in shards:
             observation = json.loads((shard / "silu_errors.json").read_text())
-            schedule = observation["sampling"]
+            schedule = sampling_schedule(observation)
             sampling_schedules.add(schedule)
             for line in (shard / "samples.jsonl").read_text().splitlines():
                 if (
-                    json.loads(line)["silu_sampling"]
+                    json.loads(line).get("silu_sampling")
                     != schedule
                 ):
                     raise ValueError(

@@ -1043,13 +1043,10 @@ def generate(
         else None
     )
 
-    def persistent_device(index: int) -> torch.device | str:
-        return tokens.device
-
     persistent_block_states = (
         [
-            Feature2BlockState((batch_size, block_length), device=persistent_device(index))
-            for index in range(num_blocks)
+            Feature2BlockState((batch_size, block_length), device=tokens.device)
+            for _ in range(num_blocks)
         ]
         if dynamic_block_lookahead
         else []
@@ -1059,9 +1056,9 @@ def generate(
             torch.zeros(
                 (batch_size, block_length),
                 dtype=torch.bool,
-                device=persistent_device(index),
+                device=tokens.device,
             )
-            for index in range(num_blocks)
+            for _ in range(num_blocks)
         ]
         if dynamic_block_lookahead
         else []
@@ -1616,7 +1613,7 @@ def generate(
             state_capture_callback(event)
             capture_index += 1
 
-        def advance_next_block(step_index: int) -> dict[str, torch.Tensor]:
+        def advance_next_block() -> dict[str, torch.Tensor]:
             empty = torch.zeros(
                 (batch_size, max(block_length, next_block_rows)),
                 dtype=torch.bool,
@@ -3387,7 +3384,6 @@ def generate(
                 )
             elif cross_block_prefix_state is not None:
                 cross_block_prefix_state.accumulate_changes(
-                    profile=None,
                     changed_global=changed_global,
                     changed_confidence_global=changed_confidence_global,
                     changed_remask_global=changed_remask_global,
@@ -3465,7 +3461,7 @@ def generate(
             action_confidence = candidate_action_confidence(
                 proposal, confidence, suppressed_candidate_token_ids
             )
-            next_update = advance_next_block(step_index)
+            next_update = advance_next_block()
             mark_handoff_future_cache_due(next_update)
             next_changed_rows = next_update["admitted"] | next_update["remasked"]
             keep_probability = action_confidence
@@ -3678,7 +3674,7 @@ def generate(
             )
             block_tokens = tokens[:, block_start:block_end]
             block_tokens_before = block_tokens.clone()
-            next_update = advance_next_block(step_index)
+            next_update = advance_next_block()
             mark_handoff_future_cache_due(next_update)
             next_changed_rows = next_update["admitted"] | next_update["remasked"]
             keep_probability = selected_candidate_probability(
@@ -3778,7 +3774,7 @@ def generate(
             forced_action_confidence = candidate_action_confidence(
                 proposal, forced_confidence, suppressed_candidate_token_ids
             )
-            next_update = advance_next_block(step_index)
+            next_update = advance_next_block()
             mark_handoff_future_cache_due(next_update)
             next_changed_rows = next_update["admitted"] | next_update["remasked"]
             block_tokens = tokens[:, block_start:block_end]

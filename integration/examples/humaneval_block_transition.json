@@ -1,0 +1,19 @@
+[
+  {
+    "name": "block_end",
+    "capture_index": 11,
+    "first_layer": 30,
+    "layer_count": 2,
+    "include_head": true,
+    "control_state": true
+  },
+  {
+    "name": "next_block",
+    "block_index": 2,
+    "step_index": 0,
+    "phase": "boundary_refresh",
+    "first_layer": 0,
+    "layer_count": 2,
+    "control_state": true
+  }
+]

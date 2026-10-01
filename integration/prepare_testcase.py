@@ -37,11 +37,6 @@ def _read_case(case_path, case, address, count):
     return bytes(result)
 
 
-def control_storage(path, case):
-    """Return the live control arrays recorded by preparation."""
-    return case["provenance"]["regular_control"]["storage"]
-
-
 def connect_steps(case_path, next_case_path, next_index, *, payload_root=None):
     """Connect a following real step, carrying actual DDR and selector state.
 
@@ -118,7 +113,7 @@ def connect_steps(case_path, next_case_path, next_index, *, payload_root=None):
     case.setdefault("initial_segments",[]).append(dict(address=next_map["base_address"],
         bytes=image.stat().st_size,path=relative(following["ddr_image"])))
     case["initial_segments"].extend(dict(item,path=relative(item["path"])) for item in following.get("initial_segments",[]))
-    storage = control_storage(case_path,case)
+    storage = case["provenance"]["regular_control"]["storage"]
     copies = []
     def copy(source_range,destination_range):
         size = source_range[1]-source_range[0]
@@ -127,7 +122,7 @@ def connect_steps(case_path, next_case_path, next_index, *, payload_root=None):
         if size:
             copies.append(dict(source_address=source_range[0],destination_address=destination_range[0],bytes=size))
     if next_control:
-        next_storage = control_storage(next_case_path,following)
+        next_storage = following["provenance"]["regular_control"]["storage"]
         carried = ("token_table",) if full_sequence else (("cross_pending", "token_table", "history") if new_block else
             ("relation", "cross_relation", "pending", "cross_pending", "budget", "token_table", "attempts", "history"))
         for name in carried:

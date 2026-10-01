@@ -25,13 +25,13 @@ def args(tmp_path, mode="all"):
         run_dir=tmp_path / "run",
         gpus="0,1,2,3,4,5,6",
         model_artifacts=tmp_path / "weights",
-        tasks=["gsm8k"],
+        tasks=["gsm8k", "humaneval"],
         feature3="on",
         source_version="test-source",
     )
 
 
-def test_pipeline_connects_calibration_export_and_gsm_evaluation(tmp_path):
+def test_pipeline_connects_calibration_export_and_both_full_evaluations(tmp_path):
     arguments = args(tmp_path)
     stages = pipeline.build_stages(arguments)
     names = [name for (name, *_) in stages]
@@ -47,10 +47,12 @@ def test_pipeline_connects_calibration_export_and_gsm_evaluation(tmp_path):
         "export",
         "evaluate-gsm8k",
         "collect-gsm8k",
+        "evaluate-humaneval",
+        "collect-humaneval",
     ]
     for name, commands, gpus, roots in stages:
         if name == "capture":
-            assert len(commands) == 28 and len(roots) == 4
+            assert len(commands) == 27 and len(roots) == 4
             assert all(("--train-only-calibration" in command for command in commands))
         if name == "hessians":
             assert len(commands) == 14 and len(roots) == 2
@@ -69,11 +71,26 @@ def test_pipeline_connects_calibration_export_and_gsm_evaluation(tmp_path):
             assert len(commands) == len(gpus) == 7
 
 
+def test_calibration_logical_shards_do_not_follow_physical_gpu_count(tmp_path):
+    arguments = args(tmp_path, "calibrate")
+    recorded = []
+    for devices in ("0", "0,1,2,3,5,6"):
+        arguments.gpus = devices
+        stages = pipeline.build_stages(arguments)
+        commands = {name: cmds for name, cmds, _, _ in stages}
+        recorded.append([commands[name] for name in ("capture", "hessians", "gptq")])
+        for command in commands["capture"]:
+            value = lambda flag: command[command.index(flag) + 1]
+            expected = 6 if value("--record-task") == "humaneval" and value("--split") == "train" else 7
+            assert int(value("--shard-count")) == expected
+    assert recorded[0] == recorded[1]
+
+
 def test_one_gpu_evaluates_full_native_task(tmp_path):
     arguments = args(tmp_path, mode="evaluate")
     arguments.gpus = "GPU-example"
     stages = pipeline.build_stages(arguments)
-    assert len(stages) == 2
+    assert len(stages) == 4
     assert len(stages[0][1]) == 1 and stages[0][2] == ["GPU-example"]
     assert all(
         (

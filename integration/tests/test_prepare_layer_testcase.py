@@ -1842,19 +1842,21 @@ def test_source_index_mapping_rejects_wrong_length_aliasing_and_range(indices):
         testcase.pack_tokens([4, 8], [3, 5], source_indices=indices)
 
 
-@pytest.mark.parametrize("mode", ["historical", "transition", "current_to_context"])
+@pytest.mark.parametrize("mode,sequence", [("historical", 8), ("transition", 8),
+                                        ("current_to_context", 8), ("historical", 395)])
 @pytest.mark.parametrize("grouped, deep_present", [(True, True), (False, True), (False, False)])
 @pytest.mark.parametrize("requested_target", [3, 12])
-def test_boundary_selection_uses_history_and_empty_runtime_metadata(tmp_path, mode, grouped, deep_present, requested_target):
+def test_boundary_selection_uses_history_and_empty_runtime_metadata(tmp_path, mode, sequence, grouped, deep_present, requested_target):
     historical_only = mode == "historical"
     vector_scout = mode == "current_to_context"
-    sequence, deep_tokens = 8, 3
+    deep_tokens = 3
     root = testcase.BASE
     def reg(name, offset, size):
         return dict(name=name, base=root+offset, limit=root+offset+size, access="read_write")
     regions = [reg("configuration", 0, 512), reg("cache_k", 0x1000, 256),
                reg("cache_v", 0x2000, 256), reg("cache_scale", 0x3000, 256),
                reg("deep.token_metadata", 0x4000, 256)]
+    regions[-1]["access"] = "read_only"
     config = dict(required_fields(schema("execution_config")), total_token_count=sequence,
                   sequence_length=sequence)
     (tmp_path/"scout").mkdir()
@@ -1895,6 +1897,11 @@ def test_boundary_selection_uses_history_and_empty_runtime_metadata(tmp_path, mo
         case["executions"] = case["executions"][:1]
     testcase.attach_boundary_selection(case, tmp_path, ref, scout, deep if deep_present else None,
                                        regions, sequence, deep_tokens)
+    if sequence == 395:
+        # Runtime packing of 15 A4 rows at positions 220..234 needs 7168
+        # bytes, exceeding the 7136-byte all-A8 layout for the same sequence.
+        begin, end = case["provenance"]["boundary_control"]["full_metadata"]
+        assert end - begin >= 7168
     segment = case["initial_segments"][0]
     control = (tmp_path/segment["path"]).read_bytes()
     refresh = decode_record(control[320:496], schema("token_refresh_config"))
@@ -1939,6 +1946,8 @@ def test_boundary_selection_uses_history_and_empty_runtime_metadata(tmp_path, mo
         action = case["executions"][1]["handoff_actions"][0]
         assert action["metadata_address"] == refresh["metadata_base"]
         assert "source_index_offset" not in action
+        memory_map = json.loads((tmp_path/"memory_map.json").read_text())["memory_map"]
+        assert next(r for r in memory_map if r["name"] == "deep.token_metadata")["access"] == "read_write"
     else:
         assert len(case["executions"]) == 1
         assert case["provenance"]["boundary_control"]["metadata"][0] == refresh["metadata_base"]
@@ -2140,3 +2149,15 @@ def test_unified_prepare_merges_config_and_explicit_values(tmp_path, monkeypatch
     assert observed["last_layer_output_subset"] is True
     assert observed["base_address"] == 0x20000000
     assert options["attention_checkpoints"] is True
+
+
+@pytest.mark.parametrize("execution_index", [0, 1])
+def test_prepared_case_rejects_actual_output_name_collision(execution_index):
+    from run_testcase import RTL_ROOT, validate_prepared_configurations
+
+    case = RTL_ROOT / "cases/in_block_handoff/case.json"
+    config = json.loads(case.read_text())
+    original = dict(config["expected"][0], execution_index=0)
+    config["expected"] = [original, dict(original, execution_index=execution_index)]
+    with pytest.raises(ValueError, match="repeats the actual output filename"):
+        validate_prepared_configurations(case, config)

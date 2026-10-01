@@ -572,14 +572,9 @@ def _install_target_numeric_block_ops(
     ):
         model._target_numeric_r4 = "h12288-bf16-staged/v1"
     model._target_numeric_rms_norm_count = len(norms)
-    model._target_numeric_block_rms_norm_count = (
-        2 * len(blocks) if block_rms_norm else 0
-    )
-    model._target_numeric_final_rms_norm_count = 1 if final_rms_norm else 0
     model._target_numeric_bf16_residual_block_count = len(blocks) if residual_add else 0
     model._target_numeric_silu_pwl_segments = 16 if silu_pwl16 else 0
     model._target_numeric_swiglu_multiply_block_count = len(blocks) if silu_pwl16 else 0
-    model._target_numeric_rms_workspace = workspace
 
 
 def _record_target_rope_table(model: nn.Module) -> None:
@@ -1392,7 +1387,6 @@ def install_target_numeric_lm_head(
     if not isinstance(head, nn.Linear) or head.bias is not None:
         raise TypeError("target-numeric head requires a bias-free BF16 Linear")
     workspace = LinearNumericWorkspace()
-    model._target_numeric_lm_head_workspace = workspace
     model.model.transformer.ff_out = SpinQuantW4A8Linear(
         reader.read_quantized_head(),
         workspace=workspace,
@@ -1423,7 +1417,6 @@ def _install_artifact_weights(
             f"artifact contains variant {reader.variant}, requested {variant}"
         )
     linear_workspace = LinearNumericWorkspace()
-    model._spinquant_linear_workspace = linear_workspace
     replaced = {
         "linear": 0,
         "bf16": 0,
@@ -1497,8 +1490,6 @@ def _install_artifact_weights(
         "lm_head_w8a8": 1 if reader.head_weight_bits == 8 else 0,
     }:
         raise ValueError(f"incomplete SpinQuant weight installation: {replaced}")
-    model._spinquant_artifact_manifest_sha256 = reader.manifest_sha256
-    model._spinquant_variant = variant
     model._spinquant_lm_head_weight_bits = (
         int(reader.head_weight_bits) if reader.head_quantized else None
     )
@@ -1545,7 +1536,6 @@ def replace_with_spinquant_joint_full_w4a8_v8(
             "deployment V8 calibration must have shape [32 layers, 32 KV heads]"
         )
     attention_workspace = Int8MatmulWorkspace()
-    model._spinquant_attention_workspace = attention_workspace
     for layer_index, block in enumerate(blocks):
         _install_native_attention_numeric(
             block,
@@ -1562,6 +1552,5 @@ def replace_with_spinquant_joint_full_w4a8_v8(
     restored["v8_cache"] = len(blocks)
     _install_target_numeric_block_ops(model)
     _record_target_rope_table(model)
-    model._spinquant_execution = "joint-full-w4a8-v8"
     model._spinquant_v_cache_dtype = "int8-static-per-layer-per-kv-head"
     return restored

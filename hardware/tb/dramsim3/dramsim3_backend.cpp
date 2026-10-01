@@ -399,6 +399,7 @@ void Dramsim3Backend::reset() {
 }
 
 std::uint8_t Dramsim3Backend::inspect_byte(std::uint64_t address) const {
+    (void)impl_->normalized(address);
     return impl_->read_byte(address);
 }
 

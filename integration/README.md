@@ -14,7 +14,10 @@ notebook-price prompt used for the single-layer example. Its
 `task_config` imports `algorithm/llada/configs/gsm8k.json`; explicit `model_args`
 and `generation_args` override the imported fields. Set `tier` to `baseline`, `feature1`, `feature12`
 or `feature123` in the request to select the same progression as evaluation.
-The default is `feature123`.
+The default is `feature123`. For HumanEval, use
+[`examples/humaneval_request.json`](examples/humaneval_request.json), which imports
+`algorithm/llada/configs/humaneval.json`. Its `sample.task_id` identifies the code
+completion task; the capture and preparation entry points are shared.
 [`examples/regular_layer.json`](examples/regular_layer.json) is a capture
 selection list for L0 of forward 1. The request uses the GSM8K defaults. Use fresh
 capture, preparation and run directories.
@@ -62,6 +65,15 @@ examples share one request; the block transition uses the notebook request above
 | `step_transition` | [integration/examples/step_request.json](examples/step_request.json) | L30–L31 and head/control, then the next step's L0 |
 | `block_transition` | [integration/request_example.json](request_example.json) | Block-ending L30–L31 and head/control, then the next block's L0 |
 
+HumanEval examples use [examples/humaneval_request.json](examples/humaneval_request.json):
+
+| Example (`EXAMPLE`) | Captured execution |
+|---|---|
+| `humaneval_step_transition` | L30–L31 and head/control, then the next step's L0 |
+| `humaneval_connected_steps` | L30–L31, a complete following step, then L0–L2; two heads and control transitions |
+| `humaneval_block_initialization` | Block initialization, L0 and selected L1 rows |
+| `humaneval_block_transition` | Block-ending L30–L31 and head/control, then the next block's L0–L1 |
+
 Choose an example and its request from the table, then capture it:
 
 ```bash
@@ -74,8 +86,8 @@ python3 -B integration/model_capture.py capture \
   --index "$SUPRA_ALGORITHM_ROOT/$EXAMPLE/index.json"
 ```
 
-For `full_layers_head`, `step_transition` or `block_transition`, prepare the
-capture set directly:
+For complete steps and connected examples, including the HumanEval step and
+block transitions, prepare the capture set directly:
 
 ```bash
 CASE=$(python3 -B integration/prepare_testcase.py \
@@ -92,7 +104,8 @@ CASE=$(python3 -B integration/prepare_testcase.py \
   --output "$SUPRA_ARTIFACT_ROOT/prepared/$EXAMPLE")
 ```
 
-For `block_initialization`, preparation connects the scout and selected deep rows:
+For `block_initialization` or `humaneval_block_initialization`, preparation connects
+the scout and selected deep rows:
 
 ```bash
 CASE=$(python3 -B integration/prepare_testcase.py \
@@ -125,13 +138,12 @@ Supported phases are `full_sequence`, `boundary_refresh`, `local_block`,
 `include_head` adds the matching head; `head_only` selects just the head.
 `control_state` records the state before and after the selected forward.
 For a selected final forward, capture also records `request_end` and
-`current_state_at_request_end`, including tail confirmation.
+`current_state_at_request_end`.
 
 Alternatively, the selections file can contain `start` and `end` objects.
 Each endpoint contains an event identity and a `layer` in 0–31. Capture starts
 at the first endpoint's layer, includes all intervening forwards with
-L0–L31/head/control, and ends at the last endpoint's layer. This preserves
-confirmation-only, forced-finish and block-boundary events in their actual order.
+L0–L31/head/control, and ends at the last endpoint's layer.
 
 The capture-set index lists the generated layer/head indices and their layer
 ranges. For named selections, child filenames append `-<name>-layers.json` or
@@ -163,12 +175,8 @@ head/control completion. Later events start at L0. The connection checks actual
 selected positions, precision, embedding inputs and persistent cache before
 carrying RTL-produced values forward.
 
-At a scout/deep block boundary, the connection carries the completed token and
-state tables, pending values, cache-refresh flags and accumulated transition
-masks. L0 supplies live scores to the selector; deep layers read its selected
-rows from the actual L0 output. A final L0-only endpoint executes the scout and
-selector without a deep-layer launch. Confirmation and forced-finish events use
-their own postprocess modes and retain their actual capture indices.
+A final L0-only endpoint at a block boundary executes the scout and selector
+without a deep-layer launch.
 
 ## Configuration
 
@@ -194,8 +202,8 @@ For advanced options, run `integration/prepare_layer_testcase.py --help` or
 Automatic boundary preparation derives `block_initialization_reference` or
 `boundary_reference` from the captured inputs and uses the RTL selector. The
 explicit `boundary` mode also accepts those references; without a reference it
-replays the captured scout/deep layout. FFN/QKVO reuse options retain their capacity and checkpoint
-checks. Synthetic generation and raw inspection are available through
+replays the captured scout/deep layout. Synthetic generation and raw inspection
+are available through
 `integration/layer_reference_data.py --help`.
 
 ## Checks and Results

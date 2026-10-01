@@ -39,6 +39,21 @@ def test_workload_cli_reports_missing_artifact_root(monkeypatch, capsys):
     assert "set SUPRA_ALGORITHM_ROOT" in capsys.readouterr().err
 
 
+@pytest.mark.parametrize("destination", ["source", "root", "outside"])
+def test_workload_cli_rejects_invalid_output_location(tmp_path, monkeypatch, destination):
+    from evaluation import generate, workload
+
+    root = generate.SOURCE.parent if destination == "source" else tmp_path / "artifacts"
+    output = root if destination == "root" else (
+        tmp_path / "workload.json" if destination == "outside" else root / "workload.json")
+    monkeypatch.setenv("SUPRA_ALGORITHM_ROOT", str(root))
+    monkeypatch.setattr("sys.argv", ["workload", "--root", str(tmp_path / "traces"),
+                                   "--task", "gsm8k", "--output", str(output)])
+    with pytest.raises(ValueError):
+        workload.main()
+    assert not output.exists()
+
+
 def test_future_age_advances_on_head_observation():
     from evaluation.workload import _PrecisionReplay
 
@@ -223,6 +238,7 @@ def test_rejects_nonexecuted_l31_consumer():
 
 def test_native_task_names_map_to_task_family():
     assert _task_family("gsm8k_native") == "gsm8k"
+    assert _task_family("humaneval") == "humaneval"
     with pytest.raises(ValueError, match="unsupported task"):
         _task_family("unknown")
 

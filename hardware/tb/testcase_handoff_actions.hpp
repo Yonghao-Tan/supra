@@ -6,6 +6,7 @@
 #include <array>
 #include <cstdint>
 #include <map>
+#include <set>
 #include <stdexcept>
 #include <vector>
 #include "tb/generated/execution_config_packer.hpp"
@@ -423,6 +424,7 @@ nlohmann::json testcase_handoff_actions(const nlohmann::json& execution, ReadByt
             for (const auto& row : placed) input_ordinals.emplace(row.position, row.ordinal);
             for (unsigned layout_index = 0; layout_index < layouts.size(); ++layout_index) {
               positions.clear();
+              std::set<std::uint64_t> batch_headers;
               for (const auto& row : layouts[layout_index]) {
                 const auto found = selected.find(row.position);
                 if (found == selected.end() || found->second.bits != row.bits || !positions.emplace(row.position, row).second)
@@ -438,7 +440,10 @@ nlohmann::json testcase_handoff_actions(const nlohmann::json& execution, ReadByt
                 write(row.address, 4, layout_index ? input_ordinals.at(row.position) : read(source.address, 4));
                 write(row.address + 6, 2, read(source.address + 6, 2));
                 write(row.address + 9, 1, layout_index ? FORWARD_POSTPROCESS_RESIDENT_HIDDEN : read(source.address + 9, 1));
-                write(header + 3, 1, (read(header + 3, 1) & ~1u) | (layout_index ? 0u : unsigned(read(source.address + 9, 1) == FORWARD_POSTPROCESS_EMBEDDING_TOKEN)));
+                if (batch_headers.insert(header).second)
+                    write(header + 3, 1, read(header + 3, 1) & ~1u);
+                if (!layout_index && read(source.address + 9, 1) == FORWARD_POSTPROCESS_EMBEDDING_TOKEN)
+                    write(header + 3, 1, read(header + 3, 1) | 1u);
                 auto suppressed = read(header + 24, 6);
                 const auto mask = UINT64_C(1) << row.physical;
                 suppressed = writes.at(row.position) ? suppressed & ~mask : suppressed | mask;

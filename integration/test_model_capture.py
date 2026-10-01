@@ -829,7 +829,7 @@ def test_non_full_sequence_head_export_uses_recorded_prediction_order(tmp_path, 
     if future:
         event["future_prediction_positions"] = torch.tensor([11])
     capture = SimpleNamespace(head=head, event=event)
-    index = tmp_path / "index.json"
+    index = tmp_path / "indices" / "head.json"
     if (preselected or full_sequence) and future:
         with pytest.raises(ValueError, match="head input must cover|full-sequence head rows"):
             exporter.export_head(capture, {"seed": 7}, tmp_path / "payload", index)

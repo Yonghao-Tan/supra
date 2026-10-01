@@ -141,6 +141,23 @@ def _percentile(values: list[int], fraction: float) -> float:
     return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
 
 
+def _load_sanitized_passes(root: Path) -> tuple[dict[str, float], dict[str, str]]:
+    passes: dict[str, float] = {}
+    sources: dict[str, str] = {}
+    for shard in completed_shards(root):
+        files = list(shard.glob("**/samples_humaneval_*.jsonl.cleaned"))
+        if len(files) != 1:
+            raise ValueError(
+                f"{shard}: expected one sanitized HumanEval file, found {len(files)}"
+            )
+        sources[shard.name] = str(files[0])
+        for line in files[0].read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            task_id = str(row["task_id"])
+            if task_id in passes:
+                raise ValueError(f"duplicate sanitized HumanEval task: {task_id}")
+            passes[task_id] = float(row["pass_at_1"])
+    return (passes, sources)
 
 
 def effective_trace_configuration(trace):
@@ -151,6 +168,7 @@ def effective_trace_configuration(trace):
         "decoding",
         "precision",
         "instruct_prompt_mode",
+        "humaneval_full_completion",
         "confidence_eos_eot_inf",
         "candidate_numeric_schedule",
         "candidate_suppression_schedule",
@@ -304,9 +322,7 @@ def summarize(
     root: Path, task: str, expected_samples: int, expected_shards: int, *, partial=False,
     recover_missing_exit_code=False,
 ):
-    if task != "gsm8k":
-        raise ValueError("Unknown evaluation task")
-    full_count = 1319
+    full_count = {"gsm8k": 1319, "humaneval": 164}[task]
     if not 0 < expected_samples <= full_count or (
         not partial and expected_samples != full_count
     ):
@@ -323,7 +339,11 @@ def summarize(
             missing_exit_codes.append(shard.name)
         elif not exit_code.is_file() or exit_code.read_text().strip() != "0":
             raise ValueError(f"unfinished evaluation shard: {shard}")
-    metric, filter_name = "exact_match", "strict-match"
+    (metric, filter_name) = (
+        ("exact_match", "strict-match")
+        if task == "gsm8k"
+        else ("pass@1", "create_test")
+    )
     (cases, result_sources, doc_shards) = load_config(root, task, metric, filter_name)
     if len(cases) != expected_samples:
         raise ValueError(f"expected {expected_samples} documents, got {len(cases)}")
@@ -373,13 +393,26 @@ def summarize(
     if any((score not in (0.0, 1.0) for score in raw_scores)):
         raise ValueError("single-completion scores must be binary")
     strict_or_raw = int(sum(raw_scores))
-    flexible = load_config_filter(root, task, metric, "flexible-extract")
-    if set(flexible) != set(cases):
-        raise ValueError("strict/flexible document sets differ")
-    scores = [float(row[metric]) for row in flexible.values()]
-    if any((score not in (0.0, 1.0) for score in scores)):
-        raise ValueError("flexible scores must be binary")
-    quality = {"strict_count": strict_or_raw, "flexible_count": int(sum(scores))}
+    sanitized_sources = None
+    if task == "gsm8k":
+        flexible = load_config_filter(root, task, metric, "flexible-extract")
+        if set(flexible) != set(cases):
+            raise ValueError("strict/flexible document sets differ")
+        scores = [float(row[metric]) for row in flexible.values()]
+        if any((score not in (0.0, 1.0) for score in scores)):
+            raise ValueError("flexible scores must be binary")
+        quality = {"strict_count": strict_or_raw, "flexible_count": int(sum(scores))}
+    else:
+        (sanitized, sanitized_sources) = _load_sanitized_passes(root)
+        task_ids = {str(case["sample"]["doc"]["task_id"]) for case in cases.values()}
+        if len(task_ids) != len(cases) or task_ids != set(sanitized):
+            raise ValueError("raw/sanitized HumanEval task sets differ")
+        if any((score not in (0.0, 1.0) for score in sanitized.values())):
+            raise ValueError("sanitized scores must be binary")
+        quality = {
+            "raw_create_test_count": strict_or_raw,
+            "sanitized_pass_count": int(sum(sanitized.values())),
+        }
     return {
         "schema_version": "quantized-llada-evaluation-summary/v2",
         **({"completion_recovery": {
@@ -414,14 +447,14 @@ def summarize(
             "lm_eval": metadata.version("lm_eval"),
             "datasets": datasets.__version__,
         },
-        "source_files": {"lm_eval": result_sources},
+        "source_files": {"lm_eval": result_sources, "sanitized": sanitized_sources},
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--task", choices=("gsm8k",), required=True)
+    parser.add_argument("--task", choices=("gsm8k", "humaneval"), required=True)
     parser.add_argument("--expected-samples", type=int, required=True)
     parser.add_argument("--expected-shards", type=int, required=True)
     parser.add_argument("--partial", action="store_true")

@@ -907,6 +907,7 @@ class Regression {
             test_case.budget_expected.assign(after_bytes.begin(), after_bytes.end());
             if (record.contains("selected_bits")) {
                 test_case.allocate_precision = true;
+                test_case.all_a8 = record.value("all_a8", false);
                 test_case.context_a8_token_count = record.at("context_a8");
                 const unsigned current_begin = record.at("current_begin"), current_end = record.at("current_end");
                 for (unsigned position = current_begin; position < current_end; ++position) {

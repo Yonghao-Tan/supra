@@ -1,11 +1,11 @@
 # SUPRA
 
 SUPRA is an attention-guided token-skipping diffusion LLM accelerator with
-mixed-precision execution and utilization-aware token prefetching. This
+draft/verify decoding, mixed-precision execution and utilization-aware token prefetching. This
 repository provides the algorithm implementation, quantization tools, C-model,
 synthesizable RTL, and an evaluation framework.
 
-The examples use **LLaDA-8B-Instruct and GSM8K**. Model dimensions, numerical formats and
+The examples use **LLaDA-8B-Instruct with GSM8K and HumanEval**. Model dimensions, numerical formats and
 control settings are documented with each component.
 
 PDK files, proprietary IP, and other confidential materials are excluded from
@@ -22,7 +22,7 @@ mechanisms and the engineering details of their implementation.
 | Quantization tools | [Calibration guide](algorithm/CALIBRATION.md): BF16 model to W4 Transformer weights and W8 head |
 | C-model | [Hardware guide](hardware/README.md): numerical and control references in `hardware/cmodel/` |
 | Synthesizable RTL | `hardware/rtl/` and `hardware/filelists/production.f`; portable SRAM simulation |
-| Evaluation framework | [Hardware tests](hardware/cases/README.md), [capture and preparation](integration/README.md), and GSM8K evaluation in `algorithm/` |
+| Evaluation framework | [Hardware tests](hardware/cases/README.md), [capture and preparation](integration/README.md), and GSM8K/HumanEval evaluation in `algorithm/` |
 
 ## Data Availability
 
@@ -45,7 +45,7 @@ inference through RTL execution.
    Then use the [model packaging command](algorithm/README.md#package-a-model)
    to create `$DATA/model` with W4 weights, a W8 head, the SiLU table and model metadata.
 3. **Test and evaluate the algorithm.** Run the [CPU tests](algorithm/README.md#tests-and-integration),
-   then [GSM8K evaluation](algorithm/README.md#evaluate) with that model directory.
+   then [GSM8K or HumanEval evaluation](algorithm/README.md#evaluate) with that model directory.
    Start with `--limit-per-process 1`, then omit it for full evaluation.
 4. **Test the hardware.** Install the [simulation dependencies](hardware/README.md#run-an-included-testcase),
    run the included case below, and use the [focused checks](hardware/README.md#testcases)
@@ -61,7 +61,7 @@ inference through RTL execution.
 Algorithm commands run from `algorithm/`; capture and hardware commands below
 run from the repository root. Set `SUPRA_ALGORITHM_ROOT` to the same external
 directory as `DATA`, and use a separate `SUPRA_ARTIFACT_ROOT` for hardware outputs.
-The default algorithm settings are in `algorithm/llada/configs/gsm8k.json`;
+Task settings are in `algorithm/llada/configs/gsm8k.json` and `humaneval.json`;
 capture requests import them through `task_config`.
 
 ## Run an Included Hardware Test
@@ -102,9 +102,8 @@ The algorithm environment and numerical dependencies are listed in
 Quantization and algorithm evaluation results can vary with GPU model, random
 seeds, and library versions.
 
-We welcome synthesis, place-and-route and post-layout studies with other
-libraries and implementation flows. Area, timing and power depend on the target
-technology, libraries, flow and operating conditions.
+Hardware characteristics can also vary with the implementation,
+system configuration, and operating conditions.
 
 ## Maintenance
 

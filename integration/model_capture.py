@@ -887,6 +887,7 @@ def export_head(capture, provenance, output, index, *, shared=None):
         future_prediction_positions=future_positions.tolist(),
         validation=dict(status="EXPORTED_NOT_REPLAYED"))
     export_control_state(capture, metadata, output, index)
+    index.parent.mkdir(parents=True, exist_ok=True)
     index.write_text(json.dumps(metadata, indent=2) + "\n")
 
 

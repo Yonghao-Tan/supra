@@ -78,11 +78,26 @@ def validate_prepared_configurations(case: Path, cfg: dict) -> int:
 
     Read the same initial image and ordered overlays as the testbench.
     """
+    expected_names = set()
     for item in cfg.get("expected", []):
+        name = item["name"]
+        if name in expected_names:
+            raise ValueError(f"expected name {name!r} repeats the actual output filename")
+        expected_names.add(name)
         if "execution_index" in item and (type(item["execution_index"]) is not int or
                 not 0 <= item["execution_index"] < len(cfg["executions"])):
             raise ValueError("expected execution_index must identify an existing execution")
     mapping = json.loads((case.parent / cfg["memory_map"]).read_text())
+    for item in cfg.get("expected", []):
+        address, count = item["address"], item["bytes"]
+        element = item.get("element_bytes", count)
+        stride = item.get("stride_bytes", element)
+        if (any(type(value) is not int for value in (address, count, element, stride)) or
+                count <= 0 or element <= 0 or count % element or stride < element):
+            raise ValueError("invalid strided expected address range")
+        end = address + (count // element - 1) * stride + element
+        if not mapping["base_address"] <= address < end <= mapping["limit_address"]:
+            raise ValueError(f"expected range {address:#x}..{end:#x} is outside DDR aperture")
     regions = mapping["memory_map"]
     image = case.parent / cfg["ddr_image"]
     segments = [(mapping["base_address"], image.stat().st_size, image)]

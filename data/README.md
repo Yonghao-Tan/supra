@@ -17,6 +17,10 @@ line gives a hexadecimal byte address relative to the DDR aperture, `READ` or
 the [LPDDR4 configuration](../hardware/config/ddr/lpddr4_3200_2x16_8gib.ini)
 defines the cycle period and memory timing.
 
+The corresponding baseline layer execution produces approximately 3.23 GB of
+uncompressed trace data. This directory includes the compressed Feature 1+2+3
+trace as a compact example.
+
 This is one example of the data available through the repository. Additional
 [hardware cases](../hardware/cases/README.md) provide input memory images,
 reference outputs and numerical and token-state records, while

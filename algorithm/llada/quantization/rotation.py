@@ -1,13 +1,13 @@
 """Fixed SpinQuant rotations and BF16 transform boundaries for LLaDA."""
 
 from __future__ import annotations
-import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import torch
 from numerics.bf16 import bf16, bf16_add, bf16_mul
+from quantization.checkpoint import sha256_file
 
 INSTRUCT_CHECKPOINT = Path(
     os.environ.get("SUPRA_RELOCATED_INSTRUCT_CHECKPOINT", "models/LLaDA-8B-Instruct")
@@ -43,14 +43,6 @@ CHECKPOINT_PROFILES = {
         "model_identity": "LLaDA-8B-Base-original-bf16",
     },
 }
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(8 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def _validate_llada_config(config_path: Path, model_identity: str) -> None:

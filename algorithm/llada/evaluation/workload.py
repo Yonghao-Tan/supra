@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any
+from evaluation.generate import external_output
 
 
 SCHEMA = "supra-algorithm-workload/v2"
@@ -16,6 +17,8 @@ MASKED, TENTATIVE, LOCKED = 0, 1, 2
 def _task_family(name: str) -> str:
     if name.startswith("gsm8k"):
         return "gsm8k"
+    if name.startswith("humaneval"):
+        return "humaneval"
     raise ValueError(f"unsupported task name: {name!r}")
 
 
@@ -530,10 +533,7 @@ def main() -> None:
     artifact_directory = os.environ.get("SUPRA_ALGORITHM_ROOT")
     if not artifact_directory:
         parser.error("set SUPRA_ALGORITHM_ROOT to the external algorithm artifact directory")
-    artifact_root = Path(artifact_directory).resolve()
-    output = args.output.resolve()
-    if output != artifact_root and artifact_root not in output.parents:
-        raise ValueError("workload output must be below SUPRA_ALGORITHM_ROOT")
+    output, _ = external_output(args.output, artifact_directory)
     result = export_workload(args.root, args.task)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, separators=(",", ":")) + "\n", encoding="utf-8")

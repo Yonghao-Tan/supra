@@ -1,0 +1,28 @@
+{
+  "task_config": "../../algorithm/llada/configs/humaneval.json",
+  "prompt": "from typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n",
+  "sample_id": "HumanEval/0",
+  "sample": {
+    "task_id": "HumanEval/0"
+  },
+  "dataset": "openai/openai_humaneval",
+  "split": "test",
+  "fewshot": 0,
+  "model_args": {
+    "model_path": "/absolute/path/to/model/model_metadata",
+    "spinquant_artifact_dir": "/absolute/path/to/model/artifact_w8_head",
+    "silu_table": "/absolute/path/to/model/silu_table_monotone.json"
+  },
+  "generation_args": {
+    "until": [
+      "\nclass",
+      "\ndef",
+      "\n#",
+      "\nif",
+      "\nprint"
+    ],
+    "max_gen_toks": 256,
+    "do_sample": false,
+    "temperature": 0
+  }
+}

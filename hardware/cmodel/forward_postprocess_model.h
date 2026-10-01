@@ -6,7 +6,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define FORWARD_POSTPROCESS_MODEL_API_VERSION 2026090902u
 #define FORWARD_POSTPROCESS_A4_DIRECT_THRESHOLD_BF16 0x3f66u
 #define FORWARD_POSTPROCESS_MAX_ROWS 128u
 #define FORWARD_POSTPROCESS_MAX_DRAFT_VERIFY_POSITIONS 32u
@@ -133,8 +132,6 @@ struct forward_postprocess_draft_verify_result {
     uint32_t token_changed_mask;
     uint32_t tail_closed_mask;
 };
-
-uint32_t forward_postprocess_model_api_version(void);
 
 int forward_postprocess_pack_next_tokens(
     const struct forward_postprocess_next_token_descriptor *token_ordinals,

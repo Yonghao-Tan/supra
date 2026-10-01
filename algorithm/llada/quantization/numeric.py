@@ -67,7 +67,7 @@ def unpack_signed_int4(packed: torch.Tensor, logical_k: int) -> torch.Tensor:
     return output[..., :logical_k].contiguous()
 
 
-def _validate_group_size(columns: int, group_size: int) -> int:
+def _validate_group_size(group_size: int) -> int:
     if group_size not in W4_SCALE_MODES:
         raise ValueError(
             f"W4 group size must be one of {tuple(W4_SCALE_MODES)}, got {group_size}"
@@ -76,9 +76,9 @@ def _validate_group_size(columns: int, group_size: int) -> int:
 
 
 def _expand_w4_scales(
-    scale_bf16: torch.Tensor, *, rows: int, columns: int, group_size: int
+    scale_bf16: torch.Tensor, *, rows: int, group_size: int
 ) -> torch.Tensor:
-    _validate_group_size(columns, group_size)
+    _validate_group_size(group_size)
     expected_shape = (rows,)
     if tuple(scale_bf16.shape) != expected_shape:
         raise ValueError(
@@ -92,8 +92,8 @@ def symmetric_w4_scale_bf16(
 ) -> torch.Tensor:
     if weight.ndim != 2 or not torch.is_floating_point(weight):
         raise ValueError("GPTQ W4 weight must be a rank-2 floating tensor")
-    (rows, columns) = weight.shape
-    groups = _validate_group_size(int(columns), int(group_size))
+    rows = weight.shape[0]
+    groups = _validate_group_size(int(group_size))
     grouped = weight.detach().to(torch.float32).reshape(rows, groups, -1)
     scale = bf16(grouped.abs().amax(dim=2) * (2.0 / 15.0))
     scale = torch.where(scale == 0, torch.ones_like(scale), scale)
@@ -108,7 +108,6 @@ def quantize_symmetric_w4(
     expanded_scales = _expand_w4_scales(
         scale_bf16,
         rows=int(values.shape[0]),
-        columns=int(values.shape[1]),
         group_size=int(group_size),
     )
     codes = quantize_symmetric_w4_codes(values, scale_bf16, group_size=group_size)
@@ -125,7 +124,6 @@ def quantize_symmetric_w4_codes(
     expanded_scales = _expand_w4_scales(
         scale_bf16,
         rows=int(values.shape[0]),
-        columns=int(values.shape[1]),
         group_size=int(group_size),
     )
     return torch.clamp(

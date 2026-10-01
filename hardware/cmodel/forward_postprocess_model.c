@@ -91,10 +91,6 @@ static unsigned popcount32(uint32_t value) {
     return count;
 }
 
-uint32_t forward_postprocess_model_api_version(void) {
-    return FORWARD_POSTPROCESS_MODEL_API_VERSION;
-}
-
 static void write_physical_row(
     const struct forward_postprocess_next_token_descriptor *token_ordinals,
     size_t logical_index, uint8_t compute_group, uint8_t pe_slot,

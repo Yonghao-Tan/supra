@@ -5,7 +5,6 @@ import json
 from types import SimpleNamespace
 import pytest
 import torch
-from calibration.data import capture_sample_ordinal
 from calibration.capture import (
     linear_probe_event_indices,
     validate_replay_source,
@@ -39,7 +38,7 @@ def test_calibration_records_explicit_dependency_behavior(task):
     assert arguments.get("cache_initialization_activation_policy", "default") == "default"
 
 
-def test_silu_samples_follow_request_forward_and_layer_not_worker_history():
+def test_silu_samples_follow_continuous_shard_call_counter():
     from calibration.capture import silu_error_observers
     from numerics.bf16 import silu_pwl_bf16
 
@@ -50,55 +49,27 @@ def test_silu_samples_follow_request_forward_and_layer_not_worker_history():
             return (silu_pwl_bf16(gate) * up.float()).to(torch.bfloat16)
 
     blocks = [Block(), Block()]
-    model = SimpleNamespace(
-        model=SimpleNamespace(transformer=SimpleNamespace(blocks=blocks))
-    )
+    model = SimpleNamespace(model=SimpleNamespace(transformer=SimpleNamespace(blocks=blocks)))
     gate = torch.arange(16384).to(torch.int16).view(torch.bfloat16)
     up = torch.ones_like(gate)
     expected = blocks[0]._silu_multiply(gate, up)
-
-    def observe(identity, statistics, forward=3):
-        with silu_error_observers(
-            model,
-            enabled=True,
-            sample_identity=("code", identity),
-            forward_index=lambda: forward,
-            statistics=statistics,
-        ):
+    statistics = {}
+    for call in range(2):
+        # Separate request contexts retain the per-layer counter.
+        with silu_error_observers(model, enabled=True, statistics=statistics):
             for block in blocks:
                 actual = block._silu_multiply(gate, up)
                 assert torch.equal(actual.view(torch.int16), expected.view(torch.int16))
-
-    first, second, together, reversed_order = {}, {}, {}, {}
-    observe("first", first)
-    observe("second", second)
-    observe("first", together)
-    observe("second", together)
-    observe("second", reversed_order)
-    observe("first", reversed_order)
-    for layer in range(2):
-        for key in ("gate_counts", "up_squared_sum"):
-            assert torch.equal(
-                first[layer][key] + second[layer][key], together[layer][key]
-            )
-            assert torch.equal(together[layer][key], reversed_order[layer][key])
-        assert together[layer]["calls"] == 2
-        assert int(together[layer]["gate_counts"].sum()) == 16384
-    assert not torch.equal(first[0]["gate_counts"], first[1]["gate_counts"])
-    next_forward = {}
-    observe("first", next_forward, forward=4)
-    assert not torch.equal(first[0]["gate_counts"], next_forward[0]["gate_counts"])
+        expected_counts = torch.zeros(65536, dtype=torch.long)
+        for previous in range(call + 1):
+            indices = (torch.arange(8192) * 3 + previous * 8191) % 16384
+            expected_counts.scatter_add_(0, indices, torch.ones_like(indices))
+        for layer in range(2):
+            assert torch.equal(statistics[layer]["gate_counts"], expected_counts)
+            assert statistics[layer]["calls"] == call + 1
     assert all("_silu_multiply" not in vars(block) for block in blocks)
-    with pytest.raises(ValueError, match="request identity"):
-        with silu_error_observers(model, enabled=True):
-            pass
     with pytest.raises(ValueError, match="nonfinite"):
-        with silu_error_observers(
-            model,
-            enabled=True,
-            sample_identity=("code", "bad"),
-            forward_index=lambda: 0,
-        ):
+        with silu_error_observers(model, enabled=True):
             blocks[0]._silu_multiply(torch.full_like(gate, float("nan")), up)
     assert all("_silu_multiply" not in vars(block) for block in blocks)
 
@@ -234,8 +205,6 @@ def replay_args():
     return SimpleNamespace(
         train_only_calibration=True,
         split="train",
-        anchor="n4",
-        linear_a8=False,
         _artifact_manifest_sha256="weight",
         _w8_head_manifest_sha256="head",
         _head_weight_bits=8,
@@ -245,40 +214,20 @@ def replay_args():
     )
 
 
-def test_event_selection_uses_capture_ordinal_across_directory_and_solver_shards():
-    events = [
-        SimpleNamespace(
-            block_index=i,
-            step_index=0,
-            forward_kind="boundary_refresh",
-            future_prediction_positions=torch.empty(0),
-        )
-        for i in range(7)
-    ]
-    records = [
-        dict(task="gsm8k", sample_id=f"train/{i}", ordinal=i) for i in range(128)
-    ]
-    expected = {
-        r["sample_id"]: linear_probe_event_indices(
-            events, stratified=True, sample_ordinal=capture_sample_ordinal(r)
-        )
-        for r in records
-    }
-    for capture_shards in (1, 6, 7):
-        ordered = [
-            r for shard in range(capture_shards) for r in records[shard::capture_shards]
-        ]
-        for solver_shards in (1, 7):
-            actual = {
-                r["sample_id"]: linear_probe_event_indices(
-                    events, stratified=True, sample_ordinal=capture_sample_ordinal(r)
-                )
-                for shard in range(solver_shards)
-                for r in ordered[shard::solver_shards]
-            }
-            assert actual == expected
-    with pytest.raises(ValueError, match="ordinal"):
-        capture_sample_ordinal(dict(task="gsm8k", sample_id="train/0"))
+def test_event_selection_preserves_sorted_file_ordinal_when_scheduled():
+    from calibration.capture import select_shard
+    events = [SimpleNamespace(block_index=i, step_index=0,
+        forward_kind="boundary_refresh", future_prediction_positions=torch.empty(0))
+        for i in range(7)]
+    # File order is shard directory then sample filename, not original sample ID.
+    files = sorted(f"shard_{i % 7:02d}/sample_{i:04d}.pt" for i in range(128))
+    expected = {path: linear_probe_event_indices(events, stratified=True, sample_ordinal=ordinal)
+        for ordinal, path in enumerate(files)}
+    for workers in (1, 6, 7):
+        actual = {path: linear_probe_event_indices(events, stratified=True, sample_ordinal=ordinal)
+            for shard in range(workers) for ordinal, path in select_shard(files, shard, workers)}
+        assert actual == expected
+    assert expected[files[1]] != linear_probe_event_indices(events, stratified=True, sample_ordinal=7)
 
 
 @pytest.mark.parametrize(
@@ -326,7 +275,7 @@ def write_coverage(root, shard, sample, *, numeric=None):
                 banks=[str(directory / "sample.pt")],
                 source_records=[record],
                 train_only_calibration=True,
-                event_sampling="stratified_max6_capture_ordinal/v2",
+                event_sampling="stratified_max6_sorted_file_ordinal/v1",
                 modules={
                     name.removesuffix(".weight"): {} for name in expected_w4_ids()
                 },
@@ -366,6 +315,10 @@ def test_hessian_rejects_missing_mixed_or_wrong_parent_provenance(tmp_path):
     path.write_text(json.dumps(incomplete))
     with pytest.raises(ValueError, match="missing capture numerical"):
         hessian_sources(tmp_path, train_only=True)
+
+
+
+
 
 
 @pytest.mark.parametrize(

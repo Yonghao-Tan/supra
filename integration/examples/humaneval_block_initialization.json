@@ -1,0 +1,11 @@
+[
+  {
+    "name": "block_initialization",
+    "block_index": 1,
+    "step_index": 0,
+    "phase": "boundary_refresh",
+    "first_layer": 0,
+    "layer_count": 2,
+    "control_state": true
+  }
+]

@@ -1,7 +1,9 @@
 """Initialize G-1 W4 weights with symmetric LWC and sequential V8 calibration.
 
-WikiText training inputs use a fixed A4/A8 schedule. Deployment trajectory
-Hessians and joint GPTQ are collected and solved in the subsequent stages."""
+WikiText training inputs use a fixed A4/A8 schedule and the original
+initialization graph: native RMSNorm/SiLU, FP32 R4 rounded to BF16, and
+K8 before native RoPE. Deployment trajectory Hessians and joint GPTQ use
+the deployment graph in subsequent stages."""
 
 from __future__ import annotations
 import argparse
@@ -26,15 +28,13 @@ from quantization.model import (
     SpinQuantV8CacheCodec,
     SpinQuantW4A8Linear,
     _install_native_attention_numeric,
-    _install_target_numeric_block_ops,
-    _record_target_rope_table,
 )
 from quantization.numeric import (
     W4_SCALE_MODES,
     SpinQuantW4Tensor,
     quantize_symmetric_w4,
 )
-from quantization.rotation import INSTRUCT_CHECKPOINT, structured_hadamard_12288_bf16
+from quantization.rotation import INSTRUCT_CHECKPOINT, structured_hadamard_12288
 from numerics.bf16 import quantize_activation_per_row_bits_bf16
 
 DEFAULT_A8_PERIOD = 16
@@ -274,7 +274,7 @@ def _replace_with_lwc_result(
         ) -> tuple[torch.Tensor, ...]:
             if len(inputs) != 1:
                 raise ValueError("ff_out expects one activation input")
-            return (structured_hadamard_12288_bf16(inputs[0]).to(inputs[0].dtype),)
+            return (structured_hadamard_12288(inputs[0]).to(inputs[0].dtype),)
 
         block.ff_out.register_forward_pre_hook(rotate_ff_input)
 
@@ -379,7 +379,7 @@ def calibrate_initial_layers(
             probability_p8=False,
             k8_cache=True,
             v8_codec=SpinQuantV8CacheCodec(scale),
-            rope_before_k8=True,
+            rope_before_k8=False,
         )
         for names in JOINT_INSIDE_LAYER_GROUPS[1:]:
             print(
@@ -435,9 +435,8 @@ def run_quantization(
         low_cpu_mem_usage=True,
     ).eval()
     rotation = apply_fixed_spinquant(
-        model, variant=variant, device=target_device, target_numeric_r4=True
+        model, variant=variant, device=target_device, target_numeric_r4=False
     )
-    _install_target_numeric_block_ops(model)
     tokenizer = AutoTokenizer.from_pretrained(checkpoint_dir, trust_remote_code=True)
     (examples, calibration) = _calibration_examples(tokenizer)
     calibration["kind"] = "wikitext_training_initialization"
@@ -481,7 +480,7 @@ def run_quantization(
                 "student_input": "fixed_schedule_per_row_a4_a8_dequant_bfloat16",
                 "activation_scale": "one_dynamic_scale_per_token_row_no_activation_grouping",
                 "sequential_joint_attention": "q8_k8_lut_p8_v8_int32_pv",
-                "target_numeric_graph": "bf16_rms_rope_pwl16_swiglu_residual_staged_h12288",
+                "initialization_graph": "native_rms_silu_fp32_r4_bf16_output_k8_before_rope",
             },
         },
     )
@@ -501,7 +500,6 @@ def run_quantization(
             group_size=group_size,
             a8_period=a8_period,
         )
-        _record_target_rope_table(model)
         return writer.finish()
     except Exception:
         writer.abort()

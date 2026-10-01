@@ -138,7 +138,7 @@ std::array<std::uint8_t, LAYER_ADDRESS_TABLE_BYTES> make_entry() {
     return image;
 }
 
-std::array<std::uint8_t, EXECUTION_CONFIG_BYTES> make_v4_configuration() {
+std::array<std::uint8_t, EXECUTION_CONFIG_BYTES> make_32_layer_configuration() {
     auto image = make_configuration();
     set_u(image, EXECUTION_CONFIG_MAGIC_OFFSET, 0x344e4c44U, 4);
     set_u(image, EXECUTION_CONFIG_VERSION_OFFSET, 4, 2);
@@ -390,9 +390,9 @@ void test_w4_empty_enhancement_planes() {
            "W4 weights must not require an enhancement allocation");
 }
 
-void test_v4_per_layer_v_scale_addresses() {
+void test_per_layer_v_scale_addresses() {
     TestCase test_case;
-    test_case.set_configuration(make_v4_configuration());
+    test_case.set_configuration(make_32_layer_configuration());
     for (unsigned layer = 0; layer < 32; ++layer) {
         auto entry = make_48_token_entry();
         const std::uint64_t scale_base = 0x00600000ULL + layer * 64ULL;
@@ -401,16 +401,16 @@ void test_v4_per_layer_v_scale_addresses() {
         test_case.start(layer);
         expect(test_case.accept_request() ==
                    kTableBase + std::uint64_t(layer) * kEntryStride,
-               "v4 layer table address mismatch at layer " +
+               "layer table address mismatch at layer " +
                    std::to_string(layer));
         test_case.send_entry(entry);
         expect(test_case.wait_done(false) == 0,
-               "v4 layer entry failed at layer " + std::to_string(layer));
+               "layer entry failed at layer " + std::to_string(layer));
         expect(packed_u64(test_case.dut_.qkv_config, 0) == scale_base,
-               "v4 V scale base mismatch at layer " +
+               "V scale base mismatch at layer " +
                    std::to_string(layer));
         expect((test_case.dut_.qkv_config[6] & 1U) != 0,
-               "v4 per-head V scale flag missing at layer " +
+               "per-head V scale flag missing at layer " +
                    std::to_string(layer));
     }
 }
@@ -442,7 +442,7 @@ void test_region_errors() {
     }
 }
 
-void test_v4_retained_k_scale_region() {
+void test_retained_k_scale_region() {
     constexpr std::uint64_t base = 0x01000000;
     const std::array<std::uint64_t, 6> table_bases = {
         base, base, base + 1, base - 16, UINT64_C(0xfffffffffffffff0), base};
@@ -451,7 +451,7 @@ void test_v4_retained_k_scale_region() {
         base + 131072, UINT64_C(0xfffffffffffffff0), 0};
     for (unsigned test = 0; test < table_bases.size(); ++test) {
         TestCase test_case;
-        auto config = make_v4_configuration();
+        auto config = make_32_layer_configuration();
         set_region(config, EXECUTION_CONFIG_RETAINED_K_SCALE_BASE_OFFSET,
                    test == 5 ? 0 : base, region_limits[test]);
         test_case.set_configuration(config);
@@ -469,10 +469,10 @@ void test_v4_retained_k_scale_region() {
     }
 }
 
-void test_v4_cache_alias_ranges() {
+void test_cache_alias_ranges() {
     for (unsigned test = 0; test < 4; ++test) {
         TestCase test_case;
-        auto config = make_v4_configuration();
+        auto config = make_32_layer_configuration();
         set_region(config, EXECUTION_CONFIG_RETAINED_K_CACHE_BASE_OFFSET, 0x00100000, 0x00200000);
         set_region(config, EXECUTION_CONFIG_RETAINED_V_CACHE_BASE_OFFSET, 0x00200000, 0x00300000);
         test_case.set_configuration(config);
@@ -753,9 +753,9 @@ int main(int argc, char** argv) {
     try {
         test_normal_and_reuse();
         test_w4_empty_enhancement_planes();
-        test_v4_per_layer_v_scale_addresses();
-        test_v4_retained_k_scale_region();
-        test_v4_cache_alias_ranges();
+        test_per_layer_v_scale_addresses();
+        test_retained_k_scale_region();
+        test_cache_alias_ranges();
         test_region_errors();
         test_header_stream_dma_and_address_errors();
         test_workspace_errors();
@@ -764,12 +764,12 @@ int main(int argc, char** argv) {
         test_clipping_configuration();
         std::cout << "PASS layer_address_loader regression: "
                   << "normal/reuse/layer-change, 34 alignment and 34 range errors, "
-                  << "v4 per-head V scale addresses for 32 layers, "
+                  << "per-head V scale addresses for 32 layers, "
                   << "separate retained K scale/containment/overflow, "
                   << "per-layer K/V exact alias/disjoint/partial overlap, "
                   << "header/geometry/stride, stream, DMA, nine containment classes, "
                   << "workspace flag/capacity/overlap, table/global containment, "
-                  << "v4 fixed 48-row workspace capacity for total rows 31/80, "
+                  << "fixed 48-row workspace capacity for total rows 31/80, "
                   << "clipping ratio/order/range/shared-input constraints/deep-normal-reload/restart, "
                   << "abort-before-accept and abort-drain\n";
         return EXIT_SUCCESS;

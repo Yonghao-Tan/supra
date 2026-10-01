@@ -89,14 +89,6 @@ def _rank_trace_path(path: Path, rank: int, world_size: int) -> Path:
     return path.with_name(f"{path.stem}.rank_{rank:02d}{path.suffix}")
 
 
-def _sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
-
-
 def _tensor_bit_evidence(tensor: torch.Tensor) -> Dict[str, Any]:
     value = tensor.detach().cpu().contiguous()
     raw = value.view(torch.uint8).numpy().tobytes()
@@ -274,6 +266,7 @@ class QuantizedLLaDALM(LM):
         feature3_dynamic_block_next_min_confidence: float = 0.92,
         logical_a4a8: bool = False,
         instruct_prompt_mode: str = "raw",
+        humaneval_full_completion: bool = False,
         confidence_eos_eot_inf: bool = False,
         candidate_numeric_mode: str = "bf16_lut",
         require_target_numeric_coverage: bool = False,
@@ -390,11 +383,7 @@ class QuantizedLLaDALM(LM):
         if not bool(trust_remote_code):
             raise ValueError("LLaDA checkpoint loading requires trust_remote_code=True")
         self.model_path = str(model_path)
-        spinquant_checkpoint = (
-            checkpoint_identity(Path(self.model_path))
-            if spinquant_artifact_dir
-            else None
-        )
+        spinquant_checkpoint = checkpoint_identity(Path(self.model_path))
         self._max_length = int(max_length)
         self.generation_mode = str(generation_mode)
         self.decoding_mode = (
@@ -653,22 +642,24 @@ class QuantizedLLaDALM(LM):
         ):
             raise ValueError("canonical direct tau requires canonical future")
         self.instruct_prompt_mode = str(instruct_prompt_mode)
+        self.humaneval_full_completion = bool(humaneval_full_completion)
         self.confidence_eos_eot_inf = bool(confidence_eos_eot_inf)
         if self.instruct_prompt_mode not in {"raw", "chat"}:
             raise ValueError("instruct_prompt_mode must be raw or chat")
+        if self.humaneval_full_completion and self.instruct_prompt_mode != "chat":
+            raise ValueError(
+                "humaneval_full_completion requires instruct_prompt_mode=chat"
+            )
         self.require_target_numeric_coverage = bool(require_target_numeric_coverage)
         self.seed = int(seed)
         self.mask_id = int(mask_id)
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_path, trust_remote_code=True
         )
-        checkpoint_root = Path(self.model_path).resolve()
         self.checkpoint_identity = {
-            "path": str(checkpoint_root),
-            "config_sha256": _sha256_file(checkpoint_root / "config.json"),
-            "safetensors_index_sha256": _sha256_file(
-                checkpoint_root / "model.safetensors.index.json"
-            ),
+            "path": spinquant_checkpoint["path"],
+            "config_sha256": spinquant_checkpoint["config_sha256"],
+            "safetensors_index_sha256": spinquant_checkpoint["index_sha256"],
         }
         with no_init_weights():
             self.model = LLaDAModelLM._from_config(
@@ -1081,6 +1072,7 @@ class QuantizedLLaDALM(LM):
                 else "state_a4a8",
             },
             "instruct_prompt_mode": self.instruct_prompt_mode,
+            "humaneval_full_completion": self.humaneval_full_completion,
             "confidence_eos_eot_inf": self.confidence_eos_eot_inf,
             "task_name": request.task_name,
             "question_start_token": question_start_token,
@@ -1394,7 +1386,14 @@ class QuantizedLLaDALM(LM):
                     )
             generated_ids = tokens[:, input_ids.shape[1] :][0]
             decoded = self.tokenizer.decode(generated_ids, skip_special_tokens=True)
-            output = self._trim_stop_sequences(decoded, generation_kwargs.get("until"))
+            is_humaneval = (
+                str(request.doc.get("task_id", "")).lower().startswith("humaneval")
+            )
+            output = (
+                decoded
+                if self.humaneval_full_completion and is_humaneval
+                else self._trim_stop_sequences(decoded, generation_kwargs.get("until"))
+            )
             self._write_trace(
                 request,
                 input_ids,

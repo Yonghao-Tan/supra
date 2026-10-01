@@ -52,7 +52,7 @@ A failed completion, protocol error or raw mismatch returns a nonzero exit code.
 | Prepared testcase | `cases/head_state_update_32tokens/case.json` | 32-token W8 head, 64-token test vocabulary, final normalization and transfer-only state update; fixed input and independent C11 expected |
 | C-model numerics | `scripts/run_unit_tests.py --case numeric` | Integer/BF16 arithmetic, residual addition, SiLU, SiLU×up, RMSNorm, RoPE, QK/PV and softmax |
 | Datapath RTL | `scripts/run_unit_tests.py --case pe --case quantizer --case sram --case layer-loader` | Mixed PE, A4 clipping, SRAM ports and layer configuration |
-| Control | `scripts/run_unit_tests.py --case psme --case atse --case sequencer` | Fixed state/selection records, added-future-token attempt limits, deep precision budget, descriptor validation and error drain |
+| Control | `scripts/run_unit_tests.py --case psme --case atse --case sequencer` | DVSC state transitions, ATSE/UAPS selection, precision budgets, descriptor validation and error drain |
 | Dependency state | `scripts/run_unit_tests.py --case invalidation --case refresh-score` | Changed-token confidence, pending-risk modes, key transitions, consumption and DMA error/drain |
 | Metadata loader | `scripts/run_unit_tests.py --case token-loader` | Packed token precision, actual loaded-token events and KV-write suppression |
 | DDR test model | `scripts/run_unit_tests.py --case ddr-model` | DDR images, read/write progress, backpressure and response errors |
@@ -66,8 +66,7 @@ A failed completion, protocol error or raw mismatch returns a nonzero exit code.
 | Testcase checker | `scripts/run_unit_tests.py --case testcase-checker` | Head/Attention raw events, token maps, signed zero/NaN, DDR copies and initial segments |
 
 The provided head/state testcase includes synthetic weights and inputs. Expected bytes were generated independently of RTL execution.
-Control records under `cases/control/` retain numeric formats and backend labels; consuming them does not import the algorithm.
-Producer labels identify the numerical or algorithm reference used for each fixture.
+Control records under `cases/control/` specify numeric formats and the reference used to generate expected values.
 
 Select focused checks:
 
@@ -113,6 +112,7 @@ python3 -B scripts/build_forward_postprocess_config.py \
   --config ../algorithm/llada/configs/gsm8k.json --tier feature12
 ```
 
+Use `../algorithm/llada/configs/humaneval.json` for HumanEval.
 The command prints DDR scalar fields to stdout using only the Python standard library.
 It converts the selected algorithm configuration into hardware control fields. Use the head, handoff and layer preparation entries
 to allocate addresses and build the DDR image from their documented binary inputs.
@@ -123,21 +123,16 @@ algorithm configuration to obtain its actual workload and control inputs.
 | Tier | Precision and selection |
 |---|---|
 | `baseline` | Full-sequence A8 Transformer execution and fixed-k submission |
-| `feature1` | ATSE dependency-based refresh and fixed-k submission |
-| `feature12` | ATSE selection and PSME mixed-precision token state updates |
-| `feature123` | ATSE selection, PSME updates and UAPS next-block prefetching |
+| `feature1` | ATSE attention-guided token skipping with fixed-k decoding |
+| `feature12` | ATSE token skipping and PSME draft/verify decoding with mixed-precision execution |
+| `feature123` | Feature1+2 with UAPS utilization-aware token prefetching |
 
 Fixed-k configurations use `decode_k` (default 3). L31/head work follows the
 captured consumers.
 
-`--tier feature12` explicitly disables joint selection. `feature123` supports
-Source B dependency-tie ranking and optional-A8 group rejection as independent DDR
-controls. The block-local step index selects the defined tie rule; it is distinct
-from the request's forward index. Focused selection, live-state and continuous
-head/post/selection tests exercise these controls.
-When dependency-tie ranking is enabled, supply `--block-step-index` with the
-actual step in the current block. For
-example, the following prints fields for block-local step 2:
+For `feature123` configurations with dependency-tie ranking enabled, supply
+`--block-step-index` with the actual step in the current block. For example,
+the following prints fields for block-local step 2:
 
 ```bash
 python3 -B scripts/build_forward_postprocess_config.py \
@@ -166,14 +161,9 @@ Each line contains a hexadecimal byte address relative to the DDR aperture,
 32 bytes; the DDR configuration defines the cycle period (`tCK`). This option
 enables tracing when building the simulator; a reused binary needs the same setting.
 
-Host `initial_segments`, DDR copies and state-to-input packing are accounted for
-separately from accelerator cycles.
-
 ## Prepared Input Format
 
 One JSON file describes a case. Paths are relative to that file; the concrete example is `cases/head_state_update_32tokens/case.json`.
-The hardware accepts execution config v4, token metadata v3 and prediction records v2.
-Each configuration schema lists its fields and version.
 `config/*.json` defines the packed records. The corresponding fixed interface
 definitions are in `rtl/config/`, `cmodel/generated/` and `tb/generated/`.
 When changing a record, update its JSON, SystemVerilog, C and C++ definitions
@@ -204,8 +194,9 @@ These copy actual DDR contents after the preceding execution has drained, before
 They support an independent hidden input area for non-identity layer connections, including overlapping copies.
 Initial segment loads and inter-launch host copies do not consume simulated accelerator or DDR cycles;
 their byte counts are reported separately.
-`handoff_actions` also run between drained launches. `execution_from_metadata` updates execution token counts and address limits from actual metadata and can relocate hidden source indices or build the selective commit table. `state_to_cross_block_inputs` packs the completed predecessor/current block state into scout inputs and relation jobs. RTL still computes probabilities, scores, selection and precision.
-Input and expected files remain unchanged. Completion records and tensor outputs can both be compared as explicit DDR ranges.
+`handoff_actions` prepare the next execution from the completed state and
+metadata between drained launches. The continuous cases provide examples.
+Completion records and tensor outputs can both be compared as explicit DDR ranges.
 `summary.json` reports `read_bytes` as full-width physical DDR reads and `write_bytes` as bytes enabled by WSTRB.
 It separately reports `physical_read_bytes` and `physical_write_bytes` from accepted 32-byte DRAM transactions,
 both for each launch and for the complete testcase. Use the physical fields for actual DDR DQ traffic.
@@ -228,9 +219,7 @@ hidden and cache outputs; the checker compares raw tensor and control results.
 
 Scheduling options belong in the preparation configuration. FFN groups contain
 four or six batches within 18 activation compute groups (589,824 bytes).
-Q/K/V/O groups reuse weights across metadata batches and reuse K/V panels across
-Attention sub-batches. The execution and token-metadata schemas describe the
-layout, capacity and precision fields. See the preparation guide and
+See the preparation guide and
 `integration/prepare_layer_testcase.py --help` for configuration fields.
 
 ## Hardware Architecture
@@ -238,14 +227,16 @@ layout, capacity and precision fields. See the preparation guide and
 `supra_top` is the synthesizable accelerator-core top, with launch/completion
 and AXI4 interfaces. Confidential chip-level integration, including the MCU,
 external memory interface, PLL, and system control, is excluded from this release.
+Implementation-specific optimizations, such as clock gating, are also excluded
+from this release.
 
 - N8 PE: M8 x N8, W4A4/W4A8 and INT8 Attention operations, with INT32 dot accumulation.
 - Transformer weights are W4; the head uses W8A8. Dynamic A4/A8, BF16 scales, R4 and configured A4 clipping are implemented.
 - SRAM: 26 macros, 640 KiB, 128-bit words. The portable model preserves dual-port, byte-mask and synchronous-read behavior.
 - AXI: 256-bit data, independent read/write channels, bounded outstanding requests, backpressure and error drain.
-- ATSE, PSME and UAPS perform token selection, mixed-precision state updates and future-token prefetch control.
-
-Simulated execution starts with data available in DDR; host loading/model preparation are excluded from accelerator cycles.
+- ATSE performs attention-guided token skipping; UAPS provides utilization-aware token prefetching.
+- PSME combines draft/verify state control (DVSC) with mixed-precision execution
+  through the phase-shared compute scheduler (PSCS).
 
 ## Source and License
 

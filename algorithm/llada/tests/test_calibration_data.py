@@ -7,7 +7,7 @@ from calibration.data import load_gsm8k_training_records, load_code_training_rec
 
 
 @pytest.mark.parametrize("task", ["gsm8k", "humaneval"])
-def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
+def test_original_and_relocated_indices_select_identical_requests(tmp_path, task):
     rows = []
     for index in range(9):
         split = "train" if index < 6 else "validation"
@@ -42,18 +42,14 @@ def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
         load_gsm8k_training_records if task == "gsm8k" else load_code_training_records
     )
     collected = []
-    for schema in ["publication-qat-dataset/v1", 4]:
-        entry = (
-            dict(source, filename="records.jsonl")
-            if isinstance(schema, str)
-            else dict(source, external_path="/unavailable/records.jsonl")
-        )
+    for relocated in (False, True):
+        entry = dict(source, external_path="/unavailable/records.jsonl"
+                     if relocated else str(tmp_path / "records.jsonl"))
         manifest = tmp_path / "index.json"
         manifest.write_text(
             json.dumps(
                 dict(
-                    schema_version=schema,
-                    external_data_dir="/unavailable",
+                    schema_version=4,
                     sources={"gsm8k_train" if task == "gsm8k" else "code": entry},
                 )
             )
@@ -63,14 +59,14 @@ def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
             split="validation",
             sample_count=2,
             seed=7,
-            data_dir_override=tmp_path,
+            data_dir_override=tmp_path if relocated else None,
         )
         collected.append(records)
         if gsm:
             pool = [dict(question=f"official question {index}", answer=str(index)) for index in range(12)]
             pool += [dict(question=row['messages'][0]['content'], answer=row['messages'][1]['content']) for row in rows]
             diagnostic = loader(manifest, split='validation', sample_count=2, seed=7,
-                                data_dir_override=tmp_path, fewshot_pool=pool)
+                                data_dir_override=tmp_path if relocated else None, fewshot_pool=pool)
             assert [(r.sample_id, r.source_index, r.answer) for r in diagnostic] == [
                 (r.sample_id, r.source_index, r.answer) for r in records]
             for record in diagnostic:
@@ -79,9 +75,9 @@ def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
                 assert target not in record.prompt[:record.question_char_start]
             with pytest.raises(ValueError, match='target content'):
                 loader(manifest, split='validation', sample_count=2, seed=7,
-                       data_dir_override=tmp_path, fewshot_pool=pool[:12])
+                       data_dir_override=tmp_path if relocated else None, fewshot_pool=pool[:12])
         with pytest.raises(ValueError, match="split must be train or validation"):
-            loader(manifest, split="test", sample_count=1, data_dir_override=tmp_path)
+            loader(manifest, split="test", sample_count=1, data_dir_override=tmp_path if relocated else None)
     assert collected[0] == collected[1]
     assert len(collected[0]) == 2
     if task == "gsm8k":
@@ -98,7 +94,7 @@ def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
             split="validation",
             sample_count=2,
             seed=7,
-            data_dir_override=tmp_path,
+            data_dir_override=tmp_path if relocated else None,
         )
     (tmp_path / "records.jsonl").write_bytes(payload)
     damaged = json.loads(manifest.read_text())
@@ -110,7 +106,7 @@ def test_prepared_and_split_indices_select_identical_requests(tmp_path, task):
             split="validation",
             sample_count=2,
             seed=7,
-            data_dir_override=tmp_path,
+            data_dir_override=tmp_path if relocated else None,
         )
 
 

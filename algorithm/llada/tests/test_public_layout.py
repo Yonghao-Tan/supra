@@ -36,7 +36,7 @@ def test_ignore_rules_include_model_source_and_exclude_payload(tmp_path):
 
 @pytest.mark.parametrize(
     "module, option",
-    [("evaluation.model", "--model")],
+    [("evaluation.model", "--model"), ("evaluation.scoring", "samples")],
 )
 def test_evaluation_cli_loads_in_a_fresh_interpreter(module, option):
     env = dict(

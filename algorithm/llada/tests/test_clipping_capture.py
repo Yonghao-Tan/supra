@@ -57,8 +57,8 @@ def test_evaluator_installs_initialization_clipping_with_unclipped_regular_steps
     monkeypatch.setattr(evaluator.AutoTokenizer, "from_pretrained", lambda *a, **k: SimpleNamespace())
     monkeypatch.setattr(evaluator.LLaDAConfig, "from_pretrained", lambda *a, **k: None)
     monkeypatch.setattr(evaluator.LLaDAModelLM, "_from_config", lambda *a, **k: model)
-    monkeypatch.setattr(evaluator, "_sha256_file", lambda *a: None)
-    monkeypatch.setattr(evaluator, "checkpoint_identity", lambda *a: {})
+    identity = dict(path="/model", config_sha256="config", index_sha256="index")
+    monkeypatch.setattr(evaluator, "checkpoint_identity", lambda *a: identity)
     monkeypatch.setattr(evaluator, "SpinQuantArtifactReader", lambda *a, **k: SimpleNamespace(
         manifest_sha256="test", transformer_weight_arithmetic="gminus1"))
     monkeypatch.setattr(evaluator, "replace_with_spinquant_joint_full_w4a8_v8",
@@ -67,8 +67,10 @@ def test_evaluator_installs_initialization_clipping_with_unclipped_regular_steps
                         lambda *a, **k: {"valid": True, "transformer_activation": {}})
     settings = json.loads((Path(evaluator.__file__).parents[1] / "configs/gsm8k.json").read_text())["model_args"]
     settings.update(a4_clip_ratio=1.0, a4_output_clip_ratio=1.0)
-    evaluator.QuantizedLLaDALM(model_path="/unused", spinquant_artifact_dir="/unused",
-                             device="cpu", **settings)
+    evaluated = evaluator.QuantizedLLaDALM(model_path="/unused", spinquant_artifact_dir="/unused",
+                                        device="cpu", **settings)
+    assert evaluated.checkpoint_identity == dict(
+        path="/model", config_sha256="config", safetensors_index_sha256="index")
     values = torch.tensor([[[4.0, -2.0], [-0.0, -8.0]]], dtype=torch.bfloat16)
     for block in transformer.blocks:
         assert all(getattr(block, name)._target_a4_clip_ratio == 1 for name in TARGET_BLOCK_LINEARS)

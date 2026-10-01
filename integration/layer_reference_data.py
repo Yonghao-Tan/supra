@@ -664,7 +664,7 @@ def make_control_loop_reference_data(token_metadata: bytes, *, seed: int = 20260
     import struct
     token_count = token_metadata[0] if token_metadata else 0
     if not 1 <= token_count <= 48 or len(token_metadata) < 32+16*token_count:
-        raise ValueError("control loop requires a complete one-round V3 token descriptor")
+        raise ValueError("control loop requires a complete one-round token descriptor")
     tokens, positions, bits = [], [], []
     for token in range(token_count):
         offset = 32+token*16
@@ -738,7 +738,7 @@ def validate_numeric_capabilities(metadata: dict) -> None:
         if any(".clip." in name or name.endswith(".r4_output") for _, name in entries):
             raise ValueError("clipping/R4 observations require explicit numeric_capabilities")
         return
-    if capability not in ("a4-token-clip-bf16/v1", "a4-row-clip-bf16/v1"):
+    if capability != "a4-row-clip-bf16/v1":
         raise ValueError(f"unsupported clipping numerical rule: {capability}")
 
     def require(role, name, encoding, dtype, shape):
@@ -1131,7 +1131,7 @@ def main() -> None:
     parser.add_argument("--silu-reference-data", type=Path,
                         help="use the SiLU implementation with an exported coefficient table")
     parser.add_argument("--token-metadata", type=Path,
-                        help="control-loop: independently checked one-round V3 selection")
+                        help="control-loop: token metadata for one selection round")
     parser.add_argument("--deployment-fields", type=Path,
                         help="single layer/control-loop: DDR scalar configuration with all seven clipping ratios")
     parser.add_argument("--layers", type=int, default=1)
@@ -1154,7 +1154,7 @@ def main() -> None:
         return
     if args.action in ("boundaries", "closeouts"):
         if args.index.exists():
-            parser.error("boundaries requires a new --index in the allowed output directory")
+            parser.error(f"index already exists: {args.index}; choose a new --index path")
         _load_algorithm()
         torch.set_num_threads(args.threads)
         result = make_control_boundaries(device=args.device, closeouts_only=args.action == "closeouts")

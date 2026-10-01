@@ -277,7 +277,7 @@ def main():
         raise FileExistsError(output)
     baseline = SpinQuantArtifactReader(args.artifact_dir, verify_files=False)
     (sources, banks) = hessian_sources(
-        args.hessian_root, train_only=True, artifact_identity=baseline.manifest_sha256
+        args.hessian_root, train_only=True, artifact_identity=baseline.manifest_sha256,
     )
     if len(banks) != args.expected_requests:
         raise ValueError("unexpected calibration request count")

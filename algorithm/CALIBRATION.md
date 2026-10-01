@@ -52,8 +52,7 @@ preparation uses seed 20260825 and the train/check row indices in
 problem-group separation between train and check requests.
 
 Code records are checked against the source byte count, existing SHA-256 and
-record count while loading. A relocated data directory must contain the same
-bytes as the manifest; unchanged IDs alone do not establish content identity.
+record count while loading. These checks also apply after relocating the data directory.
 
 During calibration, `humaneval` identifies code-task formatting for the
 Personahub source; it does not select HumanEval test records. The input contains
@@ -61,8 +60,11 @@ the task and reconstructed function signature, not the reference function
 body. All fit stages use `--train-only-calibration`.
 
 Initial LWC uses diagonal reconstruction with 25 scale ratios from 0.6 to 1.2.
-R1/R2 are fixed
-and folded; BF16 R4 remains online. The W8 head uses per-output BF16
+R1/R2 are fixed and folded. Initialization uses native RMSNorm and SiLU,
+FP32 R4 rounded to BF16, and K8 encoding before native RoPE. Quantized
+Linear, QK/PV and LUT Softmax retain their integer and BF16 rescale rules.
+Subsequent capture uses the deployment BF16 graph, including staged BF16 R4
+and RoPE before K8 encoding. The W8 head uses per-output BF16
 absmax/127 scales and round-to-nearest-even codes, without sample fitting.
 Static V scales have shape `[32 layers,32 heads]` and come from the initial
 train-calibrated parent.
@@ -77,21 +79,24 @@ block size is not G128 weight grouping. SiLU uses a shared 16-segment BF16 PWL
 table, with up-squared weighting and a monotone positive branch.
 
 SiLU observation samples at most 8192 elements per layer and forward with a
-coprime stride. The offset is derived from task/sample ID, the original
-forward ordinal and layer index, so worker assignment and preceding requests
-do not change which elements are sampled. Histograms and fitted tables record
-the sampling scheme. Floating-point reduction order can still vary with
-physical sharding; element selection is independent of that order.
+coprime stride. Its offset is `layer_call_count * 8191`, modulo the tensor
+length. Each layer counter continues across requests in a logical capture
+shard. Histograms and fitted tables record this sampling scheme.
+
+The driver preserves seven logical GSM capture shards, six Personahub train
+capture shards and seven Personahub check shards. Both Hessian tasks and the
+GPTQ solver use seven logical shards. Jobs queue on the caller's selected
+physical GPUs. Reduced sample counts use at most one shard per request.
 
 ## Replay And Rebuilding
 
-Replay selects events using the original capture ordinal, independent of
-capture-directory ordering. It verifies parent/head identities, numerical
+Replay selects events using the ordinal in the sorted capture-file list,
+including shard directory order. It verifies parent/head identities, numerical
 graph, actual precision, clipping and SiLU against the installed configuration.
 Coverage records retain numerical and generation provenance. The solver
 rejects duplicate `(task, sample_id)` pairs and mismatched sources. SiLU
-samples, observation metadata and histograms must cover the same shard set.
+samples, observation metadata and histograms cover the same shard set.
 
-Physical sharding can change FP32 Hessian reduction order. Hessians must
-include the numerical and generation provenance required by the solver.
-Evaluate newly fitted artifacts using the task configuration files.
+Logical sharding determines sampled forwards, SiLU offsets and FP32 Hessian
+reduction order. Changing physical GPU assignment preserves these logical
+shards. GPU arithmetic and library versions can still affect numerical results.

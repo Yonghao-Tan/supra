@@ -958,7 +958,10 @@ def attach_boundary_selection(case, output, reference, scout, deep, regions,
     table_base, table_limit = allocate(table)
     # This output starts empty. No selected positions enter the execution image.
     metadata_base, metadata_limit = allocate(bytes(16384))
-    full_metadata_base, full_metadata_limit = allocate(bytes(len(pack_tokens([8] * sequence, list(range(sequence)))[0])))
+    # Runtime batches preserve token order: each full batch has at least 32
+    # rows, a 32-byte header and up to 48 inverse-map bytes after alignment.
+    full_metadata_bytes = 16 * sequence + 80 * ((sequence + 31) // 32)
+    full_metadata_base, full_metadata_limit = allocate(bytes(full_metadata_bytes))
     masks = 0
     jobs = bytearray()
     if historical_only:
@@ -1044,6 +1047,8 @@ def attach_boundary_selection(case, output, reference, scout, deep, regions,
     (output / "boundary_control.bin").write_bytes(control)
     case.setdefault("initial_segments", []).append(dict(address=base, bytes=len(control), path="boundary_control.bin"))
     regions.append(dict(name="boundary_control", base=base, limit=base + len(control), access="read_write"))
+    if deep is not None:
+        region("deep.token_metadata")["access"] = "read_write"
     map_path = output / "memory_map.json"
     memory_map = json.loads(map_path.read_text())
     memory_map["memory_map"] = regions
@@ -1292,11 +1297,12 @@ def attach_regular_control(case_path, control_index, *, payload_root=None):
     data = bytearray(2048)
     def schema(name):
         return json.loads((HARDWARE / "config" / (name + ".json")).read_text())
-    def alloc(payload):
+    def alloc(payload, *, leading_bytes=0, trailing_bytes=0):
         offset = align(len(data), 256)
-        data.extend(bytes(offset - len(data)))
+        data.extend(bytes(offset - len(data) + leading_bytes))
         data.extend(payload)
-        return base + offset, base + len(data)
+        data.extend(bytes(trailing_bytes))
+        return base + offset + leading_bytes, base + len(data)
     def expected(name, address, payload, element_bytes=None, stride_bytes=None):
         path = "expected.regular_" + name + ".bin"
         (output / path).write_bytes(payload)
@@ -1320,13 +1326,17 @@ def attach_regular_control(case_path, control_index, *, payload_root=None):
         if set(prior_query) != {p for p in query if begin <= p < end}:
             raise ValueError("executed query differs from its preceding dependency reduction")
         relation[np.array(prior_query) - begin, :count] = raw(prior["attn_monitor_dependency_max"])[0]
-    relation_base, relation_limit = alloc(relation.tobytes())
+    # Masked eight-key updates read and write all 16 bytes. Reserve the
+    # leading span when the first key is not an absolute multiple of eight.
+    relation_base, relation_limit = alloc(relation.tobytes(), leading_bytes=16 if begin % 8 else 0)
     cross_value = before["cross_block_prefix_state"]["relation"]
     cross = np.zeros((sequence, 32), dtype="<u2") if cross_value is None else padded_relation(cross_value, 64)
     if first_layer and not boundary:
         prefix_query = prior["attn_monitor_prefix_dependency_query_positions"].reshape(-1).tolist()
         cross[prefix_query] = raw(prior["attn_monitor_prefix_dependency_max"])[0]
-    cross_base, cross_limit = alloc(cross.tobytes())
+    cross_padding = 16 if current % 8 else 0
+    cross_base, cross_limit = alloc(cross.tobytes(), leading_bytes=cross_padding,
+                                   trailing_bytes=cross_padding)
     expected_relation = padded_relation(after["packed_state"]["dependency"], 256)
     if closeout and not initial:
         # Regular closeout skips the state update; RTL still reduces the executed rows.

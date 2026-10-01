@@ -134,8 +134,9 @@ int main(int argc, char** argv) {
         std::unique_ptr<DdrIdleObserver> idle_observer;
         json post_completions = json::array();
         const auto tick = [&]() {
+            dut.clk = 0; dut.eval();
             const auto command = std::min<unsigned>(dut.observed_command, 10u);
-            dut.clk = 0; dut.eval(); head.observe(dut); attention.observe(dut); embedding.observe(dut); context->timeInc(1);
+            head.observe(dut); attention.observe(dut); embedding.observe(dut); context->timeInc(1);
             if (!dut.rst && dut.post_completion_observe_valid)
                 post_completions.push_back(bool(dut.post_completion_observe_block_complete));
             if (trace_ffn && !dut.rst) {
@@ -184,6 +185,20 @@ int main(int argc, char** argv) {
             if (idle_observer)
                 idle_observer->observe(cycles, dut.debug_ddr_paths_drained,
                     dut.debug_ddr_read_requested, dut.debug_ddr_write_requested);
+            command_profiles[command].axi_ar_fire += dut.axi_ar_fire;
+            command_profiles[command].axi_r_fire += dut.axi_r_fire;
+            if (trace_axi_read && dut.axi_ar_fire)
+                axi_ar_trace << cycles << '\t' << command << '\t'
+                             << dut.axi_araddr << '\t'
+                             << (unsigned(dut.axi_arlen) + 1u) << '\n';
+            if (trace_axi_write && dut.axi_aw_fire)
+                axi_aw_trace << cycles << '\t' << command << '\t'
+                             << dut.axi_awaddr << '\t'
+                             << (unsigned(dut.axi_awlen) + 1u) << '\n';
+            if (trace_axi_write && dut.axi_w_fire)
+                axi_w_trace << cycles << '\t' << command << '\t'
+                            << dut.axi_wstrb << '\t'
+                            << unsigned(dut.axi_wlast) << '\n';
             dut.clk = 1; dut.eval(); context->timeInc(1);
             ++command_profiles[command].cycles;
             ++qkv_state_cycles[command][unsigned(dut.qkv_state)];
@@ -210,20 +225,6 @@ int main(int argc, char** argv) {
                 state.pe_fire += dut.shared_pe_req_valid &&
                                  dut.shared_pe_req_ready;
             }
-            command_profiles[command].axi_ar_fire += dut.axi_ar_fire;
-            command_profiles[command].axi_r_fire += dut.axi_r_fire;
-            if (trace_axi_read && dut.axi_ar_fire)
-                axi_ar_trace << cycles << '\t' << command << '\t'
-                             << dut.axi_araddr << '\t'
-                             << (unsigned(dut.axi_arlen) + 1u) << '\n';
-            if (trace_axi_write && dut.axi_aw_fire)
-                axi_aw_trace << cycles << '\t' << command << '\t'
-                             << dut.axi_awaddr << '\t'
-                             << (unsigned(dut.axi_awlen) + 1u) << '\n';
-            if (trace_axi_write && dut.axi_w_fire)
-                axi_w_trace << cycles << '\t' << command << '\t'
-                            << dut.axi_wstrb << '\t'
-                            << unsigned(dut.axi_wlast) << '\n';
             dut.clk = 0; dut.eval(); ++cycles;
             if (dut.ddr_protocol_error) throw std::runtime_error("DDR protocol error");
             if (context->gotFinish()) throw std::runtime_error("RTL terminated before replay completed");

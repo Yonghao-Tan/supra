@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 from contextlib import contextmanager
 from dataclasses import asdict
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -28,7 +27,6 @@ from quantization.rotation import INSTRUCT_CHECKPOINT, require_algo_output
 from calibration.config import generator_arguments as _generator_arguments
 
 SCHEMA_VERSION = "llada-target-numeric-matched-replay/v1"
-PROFILE = "deployment_feature12"
 
 
 def generation_arguments(
@@ -97,8 +95,6 @@ def capture_record(
     with silu_error_observers(
         model,
         enabled=silu_statistics is not None,
-        sample_identity=(record.task, record.sample_id),
-        forward_index=lambda: len(events),
         statistics=silu_statistics,
     ):
         (tokens, nfe, traces, stats) = generate(
@@ -107,7 +103,7 @@ def capture_record(
     if not events or len(events) != len(traces):
         raise RuntimeError("capture/trace event count mismatch")
     metadata = dict(
-        anchor=args.anchor,
+        anchor="n4",
         actual_linear_a8=False,
         source_split=args.split,
         source_category=record.category,
@@ -128,7 +124,6 @@ def capture_record(
         w8_head_manifest_sha256=args._w8_head_manifest_sha256,
         head_weight_bits=model.model.transformer.ff_out.weight_bits,
         generation=dict(
-            profile=PROFILE,
             arguments={
                 k: v for (k, v) in arguments.items() if k != "row_precision_context"
             },
@@ -199,18 +194,11 @@ def select_shard(records, index, count):
 
 @contextmanager
 def silu_error_observers(
-    model, *, enabled, sample_identity=None, forward_index=None, statistics=None
+    model, *, enabled, statistics=None
 ):
     if not enabled:
         yield None
         return
-    if (
-        not isinstance(sample_identity, tuple)
-        or len(sample_identity) != 2
-        or not all(isinstance(value, str) and value for value in sample_identity)
-        or not callable(forward_index)
-    ):
-        raise ValueError("SiLU sampling requires request identity and forward index")
     statistics = {} if statistics is None else statistics
     restore = []
     try:
@@ -224,7 +212,7 @@ def silu_error_observers(
             previous = vars(block).get("_silu_multiply")
             row = statistics.setdefault(layer, dict(calls=0, sampled_elements=0))
 
-            def observe(gate, up, *, original=original, row=row, layer=layer):
+            def observe(gate, up, *, original=original, row=row):
                 result = original(gate, up)
                 if (
                     gate.dtype != torch.bfloat16
@@ -242,19 +230,8 @@ def silu_error_observers(
                 stride = max(1, flat_gate.numel() // count)
                 while math.gcd(stride, flat_gate.numel()) != 1:
                     stride += 1
-                forward = forward_index()
-                if type(forward) is not int or forward < 0:
-                    raise ValueError("SiLU forward index must be nonnegative")
-                identity = json.dumps(
-                    [*sample_identity, forward, layer], separators=(",", ":")
-                )
-                offset = (
-                    int.from_bytes(
-                        hashlib.blake2b(identity.encode(), digest_size=8).digest(),
-                        "little",
-                    )
-                    % flat_gate.numel()
-                )
+                # The counter persists across requests within a logical capture shard.
+                offset = row["calls"] * 8191
                 indices = (
                     torch.arange(count, device=gate.device) * stride + offset
                 ) % flat_gate.numel()
@@ -384,11 +361,9 @@ def validate_replay_source(metadata, args, *, fitting):
 
         actual = capture_numeric_source(metadata)
         expected = dict(
-            anchor=args.anchor,
-            actual_linear_a8=args.linear_a8,
-            numeric_capture_graph=TARGET_NUMERIC_CAPTURE_GRAPH
-            if args.anchor == "n4" and (not args.linear_a8)
-            else None,
+            anchor="n4",
+            actual_linear_a8=False,
+            numeric_capture_graph=TARGET_NUMERIC_CAPTURE_GRAPH,
             artifact_manifest_sha256=getattr(args, "_artifact_manifest_sha256", None),
             w8_head_manifest_sha256=getattr(args, "_w8_head_manifest_sha256", None),
             head_weight_bits=getattr(args, "_head_weight_bits", None),
@@ -460,7 +435,7 @@ def replay_linear_hessians(model, context, banks, args, output):
             payload = torch.load(bank, map_location="cpu", weights_only=True)
             metadata = payload["metadata"]
             validate_replay_source(metadata, args, fitting=True)
-            from calibration.data import capture_sample_ordinal, capture_numeric_source
+            from calibration.data import capture_numeric_source
 
             source_records.append(
                 {
@@ -481,7 +456,7 @@ def replay_linear_hessians(model, context, banks, args, output):
             source_records[-1]["numeric_source"] = capture_numeric_source(metadata)
             events = [ForwardCaptureEvent(**r) for r in payload["events"]]
             selected = linear_probe_event_indices(
-                events, stratified=True, sample_ordinal=capture_sample_ordinal(metadata)
+                events, stratified=True, sample_ordinal=ordinal
             )
             replayer = ForwardReplayer(model, context, device=torch.device(args.device))
             for i, event in enumerate(events):
@@ -528,7 +503,7 @@ def replay_linear_hessians(model, context, banks, args, output):
         json.dumps(
             dict(
                 definition="sum X.T@X; X=BF16(A_codes*A_scale); unweighted sampled rows",
-                event_sampling="stratified_max6_capture_ordinal/v2",
+                event_sampling="stratified_max6_sorted_file_ordinal/v1",
                 banks=[str(bank) for (_, bank) in banks],
                 modules=coverage,
                 train_only_calibration=getattr(args, "train_only_calibration", False),
@@ -565,7 +540,6 @@ def main():
     parser.add_argument("--data-seed", type=int)
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--shard-count", type=int, default=1)
-    parser.add_argument("--anchor", choices=("n4",), default="n4")
     parser.add_argument("--a4-clip-ratio", type=float, default=1.0)
     parser.add_argument("--a4-output-clip-ratio", type=float)
     parser.add_argument(
@@ -574,7 +548,6 @@ def main():
     parser.add_argument("--human-feature3", action="store_true")
     parser.add_argument("--device", default="cuda")
     args = parser.parse_args()
-    args.linear_a8 = False
     if args.samples_per_task <= 0:
         parser.error("samples-per-task must be positive")
     _generator_arguments(args.record_task, None, feature3=False, steps=args.steps, gen_length=args.gen_length)
@@ -742,7 +715,7 @@ def main():
                     dict(
                         train_only_calibration=True,
                         source_split=args.split,
-                        scope="At most 8192 elements per call, coprime stride; offset from request, forward and layer; original output returned",
+                        scope="At most 8192 elements per call, coprime stride; offset = layer call count * 8191 within each logical shard; original output returned",
                         sampling=SILU_SAMPLING,
                         reference="BF16(BF16(native SiLU(BF16 gate))*BF16 up)",
                         artifact_dir=str(args.artifact_dir),

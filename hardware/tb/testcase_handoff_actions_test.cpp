@@ -4,6 +4,15 @@
 static void require(bool ok) { if (!ok) throw std::runtime_error("handoff self-test failed"); }
 
 int main() {
+    std::vector<forward_postprocess_next_token_descriptor> boundary_rows(395);
+    for (unsigned p = 0; p < boundary_rows.size(); ++p) {
+        auto& row = boundary_rows[p];
+        row.token_position = row.kv_index = row.source_index = p;
+        row.activation_bits = 8;
+    }
+    require(testcase_handoff::metadata(boundary_rows, 395, 0).size() == 7136);
+    for (unsigned p = 220; p < 235; ++p) boundary_rows[p].activation_bits = 4;
+    require(testcase_handoff::metadata(boundary_rows, 395, 0).size() == 7168);
     std::map<std::uint64_t, std::uint8_t> memory;
     const auto read = [&](std::uint64_t address) { return int(memory[address]); };
     const auto write = [&](std::uint64_t address, std::uint8_t value) { memory[address] = value; return 0; };
@@ -105,6 +114,13 @@ int main() {
     require(get(states+33*32+19,1)==1 && get(states+33*32+28,3)==0x013f80);
     require(get(states+32+28,3)==0 && get(predictions+8,4)==501 && get(predictions+32+20,2)==1);
     require(get(config+EXECUTION_CONFIG_TOKEN_METADATA_BASE_OFFSET,8)==layout);
+    for (unsigned embedding_mask : {1u, 2u, 0u, 3u}) {
+        for (unsigned row = 0; row < 2; ++row)
+            set(metadata + 32 + row * 16 + 9, 1, embedding_mask & (1u << row) ?
+                FORWARD_POSTPROCESS_EMBEDDING_TOKEN : FORWARD_POSTPROCESS_RESIDENT_HIDDEN);
+        testcase_handoff_actions(nlohmann::json{{"handoff_actions",{action}}},read,write);
+        require((get(layout + 3, 1) & 1) == unsigned(embedding_mask != 0));
+    }
     // A separate L31 layout gathers hidden rows by their normal packed ordinals.
     constexpr unsigned directory = 0x3000, l31_layout = 0x5000;
     for (unsigned b=0;b<fixed_metadata.size();++b) memory[l31_layout+b] = fixed_metadata[b];
@@ -119,6 +135,7 @@ int main() {
     require(get(layout+32,4)==501 && get(layout+48,4)==902);
     require(get(l31_layout+32,4)==0 && get(l31_layout+48,4)==1);
     require(get(l31_layout+41,1)==FORWARD_POSTPROCESS_RESIDENT_HIDDEN);
+    require((get(l31_layout+3,1) & 1) == 0);
     require(get(l31_layout+24,6)==2 && get(predictions+32+20,2)==1);
     set(metadata+32+4,2,34);
     rejected=false;

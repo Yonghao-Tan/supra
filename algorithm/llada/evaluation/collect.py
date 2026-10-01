@@ -1,6 +1,7 @@
 """Collect completed evaluation outputs and benchmark scores."""
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -18,10 +19,11 @@ from evaluation.summary import _unique_file
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=("gsm8k",), required=True)
+    parser.add_argument("--task", choices=("gsm8k", "humaneval"), required=True)
     parser.add_argument("--inputs", type=Path, nargs="+", required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--score-workers", type=int, default=4)
     parser.add_argument(
         "--partial",
         action="store_true",
@@ -29,8 +31,8 @@ def main():
     )
     args = parser.parse_args()
     (output, root) = external_output(args.output, args.artifact_root)
-    if output.exists():
-        raise ValueError("use a fresh output directory")
+    if output.exists() or args.score_workers < 1:
+        raise ValueError("use a fresh output directory and positive worker count")
     shards = []
     for directory in args.inputs:
         if (directory / "exit_code").read_text().strip() != "0":
@@ -67,7 +69,7 @@ def main():
                 ):
                     raise ValueError("unexpected Candidate numeric schedule")
                 request_count += 1
-    full_count = 1319
+    full_count = 1319 if args.task == "gsm8k" else 164
     expected = request_count if args.partial else full_count
     if not 0 < expected <= full_count:
         raise ValueError("invalid request count")
@@ -91,8 +93,34 @@ def main():
         TMPDIR=str(root / "cache/tmp"),
         OMP_NUM_THREADS="4",
     )
+    if args.task == "humaneval":
+        env["HF_ALLOW_CODE_EVAL"] = "1"
     Path(env["TMPDIR"]).mkdir(parents=True, exist_ok=True)
     with (output / "collection.log").open("w") as log:
+        if args.task == "humaneval":
+            samples = sorted(output.glob("shard_*/**/samples_humaneval_*.jsonl"))
+            if len(samples) != len(shards):
+                raise ValueError("expected one HumanEval sample file per shard")
+
+            def score(sample):
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "-B",
+                        "-m",
+                        "evaluation.scoring",
+                        str(sample),
+                    ],
+                    env=env,
+                    check=True,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                )
+
+            with ThreadPoolExecutor(
+                max_workers=min(args.score_workers, len(samples))
+            ) as pool:
+                list(pool.map(score, samples))
         subprocess.run(
             [
                 sys.executable,

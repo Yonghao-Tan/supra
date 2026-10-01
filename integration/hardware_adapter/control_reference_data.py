@@ -551,7 +551,7 @@ def make_precision_joint_reference_data() -> dict:
                 rejected_for_next_step_verification_capacity=selected.rejected_for_next_step_verification_capacity,
                 rejected_for_budget=selected.rejected_for_budget),
             unallocated_added_local_positions=packed(unallocated.added_local_positions)))
-    return dict(schema="supra-psme-uaps-context-precision/v1", target_joint_rows=48, max_next_rows=8,
+    return dict(schema="supra-uaps-token-selection/v1", target_joint_rows=48, max_next_rows=8,
         precision_source=source.name,
         records=records)
 
@@ -634,7 +634,7 @@ def select_live_joint_reference(inputs: dict) -> dict:
     baseline = scheduler.profile.analyze(bits)
     def residency(value):
         return dict(a4_tokens=value.a4_rows,a8_tokens=value.a8_rows)
-    return dict(source=source_path, progress=[] if selection is None else selection.progress_local_positions.tolist(),
+    return dict(source=str(Path(source_path).relative_to(PROJECT_ROOT)), progress=[] if selection is None else selection.progress_local_positions.tolist(),
         added=[] if selection is None else selection.added_local_positions.tolist(),
         added_bits=[] if selection is None else selection.added_row_bits.tolist(),
         base=residency(baseline if selection is None else selection.base_residency),
@@ -2043,6 +2043,7 @@ def captured_feature1_reference(index: Path, *, payload_root=None) -> dict:
                 changed_remask_global=packed(remasked)), expected=expected,
             current_begin=begin, current_end=end,
             current_bits=packed(checkpoints["transition"]["next_current_row_bits"].reshape(-1)),
+            all_a8=metadata["generation_config"].get("feature3_precision_policy") == "all_a8",
             context_a8=(0 if metadata["generation_config"].get("feature3_precision_policy") == "all_a8"
                         else metadata["generation_config"]["packed_attention_context_a8_rows"]),
             selected_bits=packed(selected_bits))])
@@ -2477,7 +2478,7 @@ def main() -> None:
     target = args.index.resolve()
     if args.kind in ("captured-feature2", "captured-feature1", "atse-captured-block-initialization", "atse-captured-block-boundary", "atse-generated-block-boundary"):
         if args.input is None or args.library is not None or target.exists():
-            parser.error("captured reference requires --input and a fresh --index in the allowed output directory")
+            parser.error("captured reference requires --input, a new --index file and no --library")
         target.parent.mkdir(parents=True, exist_ok=True)
         generate = {"captured-feature2": captured_feature2_reference, "captured-feature1": captured_feature1_reference,
                     "atse-captured-block-initialization": captured_block_initialization_reference, "atse-captured-block-boundary": captured_boundary_reference,
@@ -2533,7 +2534,7 @@ def main() -> None:
         print(json.dumps(result))
         raise SystemExit(0 if result["match"] else 1)
     if target.exists():
-        parser.error("--index must be a new file in the allowed output directory")
+        parser.error("--index already exists; choose a new output file")
     torch.set_num_threads(2)
     if args.kind == "psme-state-updates":
         reference_data = make_psme_state_updates()

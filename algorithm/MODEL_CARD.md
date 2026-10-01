@@ -11,7 +11,7 @@ tags:
 # SUPRA: LLaDA-8B-Instruct Model Configuration
 
 This model release contains the shared deployment artifact used by the
-GSM8K default configuration of the accompanying algorithm code.
+GSM8K and HumanEval default configurations of the accompanying algorithm code.
 Transformer weights are W4 with one BF16 scale per output row, activations
 are per-row A4/A8, Attention is Q8/K8/P8/V8, and the LM head is W8.
 

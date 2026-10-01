@@ -10,7 +10,7 @@ import random
 import re
 from typing import Any, Sequence
 
-SILU_SAMPLING = "request-forward-layer-coprime/v1"
+SILU_SAMPLING = "shard-layer-call8191-coprime/v1"
 CAPTURE_NUMERIC_FIELDS = (
     "anchor",
     "actual_linear_a8",
@@ -29,15 +29,6 @@ def capture_sample_identity(metadata):
     if any((not isinstance(value, str) or not value for value in identity)):
         raise ValueError("missing stable capture task/sample_id")
     return identity
-
-
-def capture_sample_ordinal(metadata):
-    """Use the original dataset ordinal, never the capture directory ordering."""
-    capture_sample_identity(metadata)
-    ordinal = metadata.get("ordinal")
-    if type(ordinal) is not int or ordinal < 0:
-        raise ValueError("missing nonnegative original capture ordinal")
-    return ordinal
 
 
 def capture_numeric_source(metadata):
@@ -212,16 +203,9 @@ def _humaneval_style_continuation(
     )
 
 
-def calibration_source_path(manifest, source, data_dir_override=None):
-    schema = manifest.get("schema_version")
-    if schema == "publication-qat-dataset/v1":
-        filename = source["filename"]
-        root = Path(manifest["external_data_dir"])
-    elif schema == 4:
-        recorded = Path(source["external_path"])
-        (filename, root) = (recorded.name, recorded.parent)
-    else:
-        raise ValueError("unsupported train calibration dataset manifest")
+def calibration_source_path(source, data_dir_override=None):
+    recorded = Path(source["external_path"])
+    (filename, root) = (recorded.name, recorded.parent)
     return (
         root if data_dir_override is None else Path(data_dir_override).resolve()
     ) / filename
@@ -246,23 +230,23 @@ def load_code_training_records(
     manifest_path = manifest_path.resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     schema_version = manifest.get("schema_version")
-    if schema_version not in {"publication-qat-dataset/v1", 4}:
-        raise ValueError("unsupported publication QAT dataset manifest")
+    if schema_version != 4:
+        raise ValueError(f"calibration manifest schema_version={schema_version!r}; expected 4")
     converted: list[CalibrationRecord] = []
     seen_sample_ids: set[str] = set()
     problem_splits: dict[str, str] = {}
     source_index = 0
     for source_name in sorted(manifest["sources"]):
         source = manifest["sources"][source_name]
-        path = calibration_source_path(manifest, source, data_dir_override)
+        path = calibration_source_path(source, data_dir_override)
         payload = path.read_bytes()
         if len(payload) != int(source["byte_count"]):
-            raise ValueError(f"publication source byte count mismatch: {path}")
+            raise ValueError(f"calibration source byte count mismatch: {path}")
         if hashlib.sha256(payload).hexdigest() != source.get("sha256"):
-            raise ValueError(f"publication source SHA-256 mismatch: {path}")
+            raise ValueError(f"calibration source SHA-256 mismatch: {path}")
         rows = [json.loads(line) for line in payload.decode("utf-8").splitlines()]
         if len(rows) != int(source["record_count"]):
-            raise ValueError(f"publication source record count mismatch: {path}")
+            raise ValueError(f"calibration source record count mismatch: {path}")
         for row in rows:
             sample_id = str(row.get("sample_id", ""))
             row_split = str(row.get("split", ""))
@@ -386,12 +370,13 @@ def load_gsm8k_training_records(
         raise ValueError("GSM sample count must be positive and offset nonnegative")
     manifest_path = manifest_path.resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("schema_version") not in ("publication-qat-dataset/v1", 4):
-        raise ValueError("unsupported publication QAT dataset manifest")
+    schema_version = manifest.get("schema_version")
+    if schema_version != 4:
+        raise ValueError(f"calibration manifest schema_version={schema_version!r}; expected 4")
     source = manifest.get("sources", {}).get("gsm8k_train")
     if not isinstance(source, dict):
         raise ValueError("publication manifest has no gsm8k_train source")
-    path = calibration_source_path(manifest, source, data_dir_override)
+    path = calibration_source_path(source, data_dir_override)
     if path.stat().st_size != int(source["byte_count"]):
         raise ValueError(f"GSM source byte count mismatch: {path}")
     if _sha256_file(path) != source["sha256"]:

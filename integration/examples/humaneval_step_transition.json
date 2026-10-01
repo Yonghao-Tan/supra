@@ -1,0 +1,16 @@
+[
+  {
+    "name": "step_end",
+    "capture_index": 1,
+    "first_layer": 30,
+    "layer_count": 2,
+    "include_head": true,
+    "control_state": true
+  },
+  {
+    "name": "next_step",
+    "capture_index": 2,
+    "first_layer": 0,
+    "layer_count": 1
+  }
+]

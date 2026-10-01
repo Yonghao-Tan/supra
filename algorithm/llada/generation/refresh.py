@@ -236,7 +236,6 @@ class CrossBlockPrefixAttentionState:
         if positions.numel():
             self.relation.index_copy_(0, positions, relation)
         self.accumulate_changes(
-            profile=profile,
             changed_global=changed_global,
             changed_confidence_global=changed_confidence_global,
             changed_remask_global=changed_remask_global,
@@ -245,7 +244,6 @@ class CrossBlockPrefixAttentionState:
     def accumulate_changes(
         self,
         *,
-        profile: dict[str, torch.Tensor] | None,
         changed_global: torch.Tensor,
         changed_confidence_global: torch.Tensor,
         changed_remask_global: torch.Tensor,

@@ -118,13 +118,48 @@ def test_standard_lm_eval_command_preserves_algorithm_and_uses_default_seeds(mon
     assert before == after
 
 
+def test_standard_humaneval_keeps_zero_shot_prompt_and_feature3_pair():
+    args = arguments("humaneval")
+    on, env, _ = entry.build_command(args)
+    assert on[on.index("--seed") + 1] == "0,1234,1234,1234"
+    assert on[on.index("--num_fewshot") + 1] == "0"
+    assert on[on.index("--tasks") + 1] == "humaneval_native"
+    parse = lambda command: dict(
+        field.split("=", 1)
+        for field in command[command.index("--model_args") + 1].split(",")
+    )
+    on_args = parse(on)
+    assert on_args["seed"] == "1234"
+    assert on_args["instruct_prompt_mode"] == "chat"
+    assert on_args["humaneval_full_completion"] == "true"
+    args.feature3 = "off"
+    off_args = parse(entry.build_command(args)[0])
+    assert off_args["generation_mode"] == "feature1_packed_feature2_fused_a4a8"
+    assert {
+        key: value for key, value in on_args.items()
+        if not key.startswith("feature3_") and key != "generation_mode"
+    } == {
+        key: value for key, value in off_args.items()
+        if not key.startswith("feature3_") and key != "generation_mode"
+    }
 
 
+def test_code_eval_uses_distinct_cache_files_for_concurrent_scorers(monkeypatch):
+    from evaluation import scoring as protocol
+
+    calls = []
+    monkeypatch.setattr(protocol.hf_evaluate, "load", lambda *args, **kwargs: calls.append((args, kwargs)))
+    protocol.load_code_eval()
+    protocol.load_code_eval()
+
+    assert all(args == ("code_eval",) for args, _ in calls)
+    assert all(kwargs["revision"] == protocol.CODE_EVAL_REVISION for _, kwargs in calls)
+    assert calls[0][1]["experiment_id"] != calls[1][1]["experiment_id"]
 
 
 def test_external_dependency_path_reaches_model_process(monkeypatch):
     monkeypatch.setenv("SUPRA_EVALUATION_DEPENDENCIES", "/remote/python-overlay")
-    _, env, _ = entry.build_command(arguments("gsm8k"))
+    _, env, _ = entry.build_command(arguments("humaneval"))
     assert env["PYTHONPATH"] == f"{entry.SOURCE}:/remote/python-overlay"
 
 
@@ -132,7 +167,7 @@ def test_native_distributed_command_uses_full_tasks_and_accelerate():
     from accelerate.commands.launch import launch_command_parser
     from lm_eval.utils import load_yaml_config
 
-    for task, fewshot in (("gsm8k", 4),):
+    for task, fewshot in (("gsm8k", 4), ("humaneval", 0)):
         args = arguments(task)
         args.native_processes = 2
         command, env, output = entry.build_command(args)
@@ -171,6 +206,7 @@ def test_distributed_runtime_uses_global_rank_and_separate_traces(monkeypatch):
 
 @pytest.mark.parametrize("task,feature3,boundary_rows", [
     ("gsm8k", True, None), ("gsm8k", False, None),
+    ("humaneval", True, None), ("humaneval", False, None),
     ("gsm8k", True, 128), ("gsm8k", True, 256),
 ])
 @pytest.mark.parametrize("device", ["cpu", "cuda"])
@@ -212,6 +248,7 @@ def test_public_command_keeps_adopted_numerics_and_discards_shell_overrides(
     monkeypatch.setenv("SUPRA_GSM_DIAGNOSTIC_INDICES", "[1,2]")
     for task, target, deep, budget in [
         ("gsm8k", 27.5, 88, 26),
+        ("humaneval", 39.5, 64, 19),
     ]:
         args = arguments(task)
         (command, env, output) = entry.build_command(args)

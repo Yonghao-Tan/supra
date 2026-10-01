@@ -91,8 +91,6 @@ def model_overrides(items):
 
 
 def build_command(args):
-    if args.task != "gsm8k":
-        raise ValueError("Unknown evaluation task")
     config_path = args.config or SOURCE / "configs" / (args.task + ".json")
     config = json.loads(Path(config_path).read_text())
     if config["task"] != args.task:
@@ -163,6 +161,8 @@ def build_command(args):
         "--output_path",
         str(output),
     ]
+    if args.task == "humaneval":
+        command.append("--confirm_run_unsafe_code")
     if args.limit is not None:
         if args.limit < 1:
             raise ValueError("limit must be a positive sample count")
@@ -194,12 +194,14 @@ def build_command(args):
         TRITON_CACHE_DIR=str(root / "cache/triton"),
         TORCH_EXTENSIONS_DIR=str(root / "cache/torch_extensions"),
     )
+    if args.task == "humaneval":
+        env["HF_ALLOW_CODE_EVAL"] = "1"
     return (command, env, output)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=("gsm8k",), required=True)
+    parser.add_argument("--task", choices=("gsm8k", "humaneval"), required=True)
     parser.add_argument("--config", type=Path)
     parser.add_argument("--split", choices=("test", "train"), default="test",
                         help="dataset split for evaluation")

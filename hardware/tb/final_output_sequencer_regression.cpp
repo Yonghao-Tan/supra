@@ -89,7 +89,7 @@ public:
         std::cout << "PASS final_output_sequencer rows=1/7/8/9/16/49/96 "
                   << "groups=2/7/12 two_round_96=PASS "
                   << "descriptor_raw=PASS descriptor_stall=PASS "
-                  << "locked_v2=PASS invalid_drain=PASS duplicate_source=PASS "
+                  << "locked=PASS invalid_drain=PASS duplicate_source=PASS "
                   << "abort_dma_hidden_rms_quant=PASS restart=PASS "
                   << "gamma_bypass=PASS threads=" << dut_.threads() << '\n';
     }

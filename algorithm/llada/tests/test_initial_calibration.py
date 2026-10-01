@@ -10,6 +10,7 @@ from numerics.bf16 import quantize_activation_per_row_bits_bf16
 from numerics.linear_kernels import LinearNumericWorkspace
 from numerics.precision import RowPrecisionContext
 from quantization.model import SpinQuantW4A8Linear
+from quantization.rotation import structured_hadamard_12288, structured_hadamard_12288_bf16
 from quantization.numeric import (
     quantize_symmetric_w4,
     symmetric_w4_scale_bf16,
@@ -40,7 +41,7 @@ class SpinQuantOmniQuantTest(unittest.TestCase):
                     )
                 select.assert_called_once_with(torch.device(expected))
 
-    def test_replaced_ff_out_retains_staged_bf16_h12288(self) -> None:
+    def test_replaced_ff_out_retains_initialization_fp32_h12288(self) -> None:
         block = nn.Module()
         block.ff_out = nn.Linear(12288, 2, bias=False).to(torch.bfloat16)
         solver = SymmetricLWC(block.ff_out, group_size=-1)
@@ -68,6 +69,11 @@ class SpinQuantOmniQuantTest(unittest.TestCase):
         )
         self.assertIsInstance(block.ff_out, SpinQuantW4A8Linear)
         self.assertEqual(len(block.ff_out._forward_pre_hooks), 1)
+        values = torch.randn(2, 12288, generator=torch.Generator().manual_seed(17)).to(torch.bfloat16)
+        hook = next(iter(block.ff_out._forward_pre_hooks.values()))
+        rotated = hook(block.ff_out, (values,))[0]
+        self.assertTrue(torch.equal(rotated, structured_hadamard_12288(values).to(torch.bfloat16)))
+        self.assertFalse(torch.equal(rotated, structured_hadamard_12288_bf16(values)))
         context.activate(torch.tensor([4], dtype=torch.int8))
         output = block.ff_out(torch.ones(1, 12288, dtype=torch.bfloat16))
         self.assertEqual(tuple(output.shape), (1, 2))

@@ -96,8 +96,6 @@ struct Result {
 };
 
 Result c11_result(const Config& cfg, const std::vector<Row>& input) {
-    if (forward_postprocess_model_api_version() != FORWARD_POSTPROCESS_MODEL_API_VERSION)
-        throw std::runtime_error("unexpected forward-postprocess model API version");
     Result result;
     const std::size_t count = input.size();
     std::vector<forward_postprocess_row_state> c_rows(count);
@@ -1423,6 +1421,7 @@ void check_feature2_step(Simulation& simulation, const nlohmann::json& input) {
     cfg.tail_bypass_all = config.at("tail_bypass_all"); cfg.tail_bypass_stable_only = config.at("tail_bypass_stable_only");
     cfg.tail_all = config.value("tail_all", false);
     cfg.transfer_only = config.value("transfer_only", false);
+    cfg.closeout_kind = config.value("closeout_kind", 0u);
     std::vector<Row> rows;
     for (const auto& item : input.at("rows")) {
         Row row;
@@ -1431,7 +1430,9 @@ void check_feature2_step(Simulation& simulation, const nlohmann::json& input) {
         row.origin = item.at("origin"); row.bits = item.at("bits"); row.top1 = item.at("top1");
         row.selected_probability = item.at("selected_probability"); row.action_confidence = item.at("action_confidence");
         row.suppressed = item.at("suppressed"); row.refresh_required = item.at("refresh_required");
-        row.prediction_flag = item.value("prediction_flag", row.state != LOCKED);
+        row.prediction_flag = item.value("prediction_flag",
+            cfg.closeout_kind == 1 ? row.state == TENTATIVE :
+            cfg.closeout_kind == 2 ? row.state == MASKED : row.state != LOCKED);
         row.cache_valid = item.value("cache_valid", true);
         require(rows.size() < 32, "observed Feature2 block exceeds 32 positions");
         const std::uint32_t bit = std::uint32_t{1} << rows.size();

@@ -36,8 +36,10 @@ def case_root(tmp_path, monkeypatch, task="gsm8k"):
     sample = {
         "filter": "strict-match",
         "exact_match": 0.0,
-        "doc": {"question": "fixture"},
+        "doc": {"task_id": "HumanEval/0"},
     }
+    if task == "humaneval":
+        sample.update(filter="create_test", **{"pass@1": 0.0})
     trace = {
         "doc_hash": "document",
         "nfe": 1,
@@ -72,6 +74,9 @@ def case_root(tmp_path, monkeypatch, task="gsm8k"):
     )
     monkeypatch.setattr(
         summary, "load_config_filter", lambda *_: {"document": {"exact_match": 1.0}}
+    )
+    monkeypatch.setattr(
+        summary, "_load_sanitized_passes", lambda *_: ({"HumanEval/0": 1.0}, {})
     )
     return SimpleNamespace(root=tmp_path, trace=trace, sample=sample, shard=shard)
 
@@ -145,6 +150,10 @@ def test_summary_requires_one_global_boundary_layer():
         summary.execution_rows(event)
 
 
+def test_human_raw_and_sanitized_are_separate(tmp_path, monkeypatch):
+    state = case_root(tmp_path, monkeypatch, "humaneval")
+    result = summary.summarize(state.root, "humaneval", 1, 1, partial=True)
+    assert result["quality"] == {"raw_create_test_count": 0, "sanitized_pass_count": 1}
 
 
 def test_incomplete_filter_trace_and_shards_are_rejected(tmp_path, monkeypatch):

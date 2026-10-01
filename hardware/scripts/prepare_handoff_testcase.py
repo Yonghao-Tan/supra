@@ -203,11 +203,11 @@ def prepare_fixed_k_completion(output):
         expected_states = bytes(reference["states"])
         complete = all(read_record("token_state_entry", expected_states, i*32)["state"] == 2
                        for i in range(32))
-        # Zero hidden gives zero logits. The C11 candidate function must choose
-        # token zero; in the last case it is the MASK and cannot become LOCKED.
+        # Zero logits select token zero. Fixed-k locks the selected proposals,
+        # including a proposal whose token ID equals the MASK ID.
         if any(candidate[0] != 0 for candidate in reference["candidates"]):
             raise ValueError("zero-hidden fixture did not produce token-zero proposals")
-        if complete != (name == "complete_k32"):
+        if complete != (quota == 32):
             raise ValueError("C11 fixture does not exercise the intended completion condition")
         (directory / "initial.bin").write_bytes(image)
         (directory / "hidden.bin").write_bytes(bytes(32*8192))

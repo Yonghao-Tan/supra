@@ -27,8 +27,6 @@ def data_index_directory(args):
 
 
 def build_stages(args):
-    if any(task != "gsm8k" for task in args.tasks):
-        raise ValueError("Unknown evaluation task")
     run = args.run_dir.resolve()
     artifact_root = args.artifact_root.resolve()
     release_root = (
@@ -80,8 +78,6 @@ def build_stages(args):
         "--gen-length", calibration["gen_length"],
         "--steps", calibration["steps"],
         "--train-only-calibration",
-        "--anchor",
-        "n4",
         "--seed",
         20260806,
         "--data-seed",
@@ -171,7 +167,7 @@ def build_stages(args):
                                  ("validation", calibration["validation_samples_per_task"])):
                 destination = run / "captures" / task / split
                 capture_roots.append(destination)
-                shard_count = min(len(gpus), count)
+                shard_count = min(6 if task == "humaneval" and split == "train" else 7, count)
                 for shard in range(shard_count):
                     captures.append(
                         command(
@@ -200,7 +196,7 @@ def build_stages(args):
                     )
             destination = run / "hessians" / task
             hessian_roots.append(destination)
-            shard_count = min(len(gpus), calibration["train_samples_per_task"])
+            shard_count = min(7, calibration["train_samples_per_task"])
             for shard in range(shard_count):
                 hessians.append(
                     command(
@@ -253,13 +249,13 @@ def build_stages(args):
                 "--shard-index",
                 shard,
                 "--shard-count",
-                len(gpus),
+                7,
                 "--device",
                 "cuda",
                 "--output-dir",
                 run / "solve" / f"shard_{shard:02d}",
             )
-            for shard in range(len(gpus))
+            for shard in range(7)
         ]
         stages.extend(
             [
@@ -471,8 +467,8 @@ def main():
     parser.add_argument(
         "--tasks",
         nargs="+",
-        choices=("gsm8k",),
-        default=["gsm8k"],
+        choices=("gsm8k", "humaneval"),
+        default=["gsm8k", "humaneval"],
     )
     parser.add_argument("--config", type=Path, help="task JSON with optional calibration settings")
     parser.add_argument("--calibration-manifest", type=Path,
